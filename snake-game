@@ -3,54 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>我是贪吃蛇 🐍 马年新春最终版</title>
+    <title>我是贪吃蛇 🐍 2026马年新春限定版</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root { 
+            --gold: #f39c12; 
+            --red: #e74c3c; 
+            --bg: #fff8e6; 
+            --orange: #e67e22;
+        }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent; 
             -webkit-touch-callout: none;
             -webkit-user-select: none;
             user-select: none;
         }
-
-        body {
-            background: linear-gradient(135deg, #fff8e6 0%, #ffe0b2 100%);
-            font-family: "Comic Sans MS", "幼圆", sans-serif;
-            touch-action: none;
-            min-height: 100vh;
+        body { 
+            background: radial-gradient(circle, #fff8e6 0%, #ffe0b2 100%);
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+            overflow-x: hidden;
+            overflow-y: auto;
+            touch-action: pan-y;
+            height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
+            padding: 10px;
+        }
+        /* 侧边滑动条美化 */
+        body::-webkit-scrollbar {
+            width: 8px;
+        }
+        body::-webkit-scrollbar-track {
+            background: rgba(255,248,230,0.5);
+        }
+        body::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 4px;
+        }
+        body::-webkit-scrollbar-thumb:hover {
+            background: var(--orange);
+        }
+        /* AI 开关按钮 */
+        #ai-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
             justify-content: center;
-            padding: 15px;
-        }
-
-        /* 通用按钮样式 */
-        .btn {
-            padding: 12px 25px;
-            font-size: 18px;
-            border-radius: 50px;
-            border: none;
-            color: white;
+            background: rgba(255,255,255,0.9);
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            font-size: 20px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            margin: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 99;
         }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+        #ai-toggle.ai-on {
+            background: var(--red);
+            color: white;
+            border-color: var(--red);
         }
-
-        .btn-secondary {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
-        }
-
         /* 音效/音乐开关 */
         .audio-controls {
             position: fixed;
@@ -60,7 +78,6 @@
             gap: 10px;
             z-index: 99;
         }
-
         .audio-btn {
             width: 45px;
             height: 45px;
@@ -69,12 +86,11 @@
             align-items: center;
             justify-content: center;
             background: rgba(255,255,255,0.9);
-            border: 2px solid #e67e22;
-            color: #e67e22;
+            border: 2px solid var(--gold);
+            color: var(--gold);
             font-size: 20px;
             cursor: pointer;
         }
-
         /* 游戏引导页 */
         #guide-page {
             position: fixed;
@@ -91,7 +107,6 @@
             z-index: 1000;
             padding: 20px;
         }
-
         .guide-content {
             background: rgba(255,255,255,0.95);
             border-radius: 24px;
@@ -99,61 +114,82 @@
             max-width: 400px;
             color: #333;
             text-align: center;
+            position: relative;
+            z-index: 1001;
         }
-
         .guide-title {
             font-size: 28px;
-            color: #e67e22;
+            color: var(--orange);
             margin-bottom: 20px;
         }
-
         .guide-item {
             margin: 15px 0;
             text-align: left;
             font-size: 16px;
         }
-
         /* 首页 */
         #game-home {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            width: 100%;
-            max-width: 400px;
-            background: rgba(255, 255, 255, 0.95);
+            width: 95%;
+            max-width: 420px;
+            background: white;
             padding: 30px 20px;
-            border-radius: 24px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-            border: 3px solid #f39c12;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(211, 84, 0, 0.2);
+            border: 4px solid var(--gold);
             text-align: center;
+            margin: 20px auto;
         }
-
         .home-title {
             font-size: 36px;
-            color: #e67e22;
+            color: var(--orange);
             margin-bottom: 15px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
-
         .year-theme {
-            color: #d35400;
+            color: var(--red);
             font-size: 20px;
             margin-bottom: 20px;
         }
-
         /* 选项组 */
         .option-group {
             margin: 15px 0;
             width: 100%;
         }
-
         .option-title {
             font-size: 20px;
             color: #2c3e50;
             margin-bottom: 10px;
         }
-
+        /* 难度/操控选择 - 修复为图2样式 */
+        .mode-options {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .mode-btn {
+            padding: 8px 18px;
+            font-size: 16px;
+            margin: 0;
+            border-radius: 50px;
+            border: 2px solid #eee;
+            background: white;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        /* 选中状态 - 图2橙色样式 */
+        .mode-btn.active {
+            background: var(--orange);
+            color: white;
+            border-color: var(--orange);
+            box-shadow: 0 4px 8px rgba(230, 126, 34, 0.2);
+        }
         /* 皮肤选择 */
         .skin-options {
             display: flex;
@@ -162,7 +198,6 @@
             gap: 10px;
             margin: 10px 0;
         }
-
         .skin-btn {
             width: 60px;
             height: 60px;
@@ -173,162 +208,312 @@
             align-items: center;
             justify-content: center;
             font-size: 24px;
+            overflow: hidden;
+            position: relative;
         }
-
         .skin-btn.active {
-            border-color: #e67e22;
+            border-color: var(--orange);
             transform: scale(1.1);
             box-shadow: 0 0 15px rgba(230, 126, 34, 0.3);
         }
-
-        /* 难度/操控选择 */
-        .mode-options {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .mode-btn {
-            padding: 8px 18px;
-            font-size: 16px;
-            margin: 5px;
-            border-radius: 50px;
-            border: 2px solid #eee;
-            background: white;
-            color: #333;
-            cursor: pointer;
-        }
-
-        .mode-btn.active {
-            background: #e67e22;
-            color: white;
-            border-color: #e67e22;
-        }
-
-        /* 游戏主容器 */
-        #game-container {
-            width: 100%;
-            max-width: 400px;
-            display: flex;
+        /* 自定义皮肤按钮样式 */
+        .custom-skin-btn {
             flex-direction: column;
-            align-items: center;
+            font-size: 14px;
+            padding: 5px;
         }
-
-        /* 游戏头部 */
-        .game-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            margin-bottom: 10px;
-        }
-
-        .game-title-small {
-            font-size: 24px;
-            color: #e67e22;
-        }
-
-        .score-panel {
-            display: flex;
-            gap: 10px;
-        }
-
-        .score {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 8px 15px;
-            border-radius: 50px;
-            color: #2c3e50;
-            font-size: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        /* Canvas容器 - 强制正方形 */
-        #canvas-wrapper {
-            width: 100%;
-            max-width: 400px;
-            aspect-ratio: 1/1;
-            position: relative;
-            background: #fff;
-            border-radius: 24px;
-            padding: 10px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-            border: 3px solid #f39c12;
-        }
-
-        /* Canvas - 匹配容器尺寸 */
-        #game-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #fff8e6;
-            border-radius: 16px;
-            display: block !important;
-            object-fit: contain;
-        }
-
-        /* 暂停/结束面板 */
-        .overlay-panel {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 16px;
+        .custom-skin-btn input {
             display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            z-index: 10;
         }
-
-        .panel-title {
-            font-size: 28px;
-            color: #e67e22;
+        .custom-skin-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
-
-        /* 圆盘操控 - 优化样式 */
-        #joystick-panel {
+        /* 自定义皮肤弹窗 - 适配三个部分 */
+        #custom-skin-modal {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 120px;
-            height: 120px;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 50%;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-            border: 2px solid #f39c12;
-            display: none;
-            z-index: 5;
-        }
-
-        .joystick-bg {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #fff8e6 0%, #ffe0b2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .joystick-knob {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
-            box-shadow: 0 4px 10px rgba(230, 126, 34, 0.3);
-            position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            touch-action: none;
-            transition: transform 0.05s ease; /* 优化滑动反馈 */
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            border: 3px solid var(--gold);
+            z-index: 1001;
+            display: none;
+            width: 90%;
+            max-width: 450px; /* 加宽适配三个预览 */
         }
-
+        .modal-title {
+            font-size: 22px;
+            color: var(--orange);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .skin-upload-group {
+            margin: 15px 0;
+        }
+        .upload-label {
+            display: block;
+            padding: 10px;
+            background: #f8f9fa;
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+        .upload-label:hover {
+            background: #f0f0f0;
+            border-color: var(--gold);
+        }
+        .upload-tip {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+            margin-top: 5px;
+        }
+        /* 预览容器 - 改为横向三列 */
+        .preview-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .preview-item {
+            text-align: center;
+            flex: 1;
+            min-width: 80px;
+            max-width: 100px;
+        }
+        .preview-box {
+            width: 80px;
+            height: 80px;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 5px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .preview-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: block;
+        }
+        .modal-btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        /* 顶部信息栏（修复重叠） */
+        .header { 
+            width: 95%; 
+            max-width: 420px; 
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between; 
+            padding: 15px 5px; 
+            margin: 0 auto;
+            position: relative;
+            gap: 10px;
+        }
+        .stat-box { 
+            background: white; 
+            padding: 5px 15px; 
+            border-radius: 50px; 
+            border: 2px solid var(--gold); 
+            font-weight: bold; 
+            flex-shrink: 0;
+        }
+        /* 游戏控制按钮（修复重叠） */
+        .game-controls {
+            display: flex;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        .game-controls .btn {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        /* 连击提示特效 */
+        #combo-tip {
+            position: absolute; 
+            top: 40%; 
+            left: 50%; 
+            transform: translate(-50%, -50%);
+            color: var(--red); 
+            font-size: 40px; 
+            font-weight: 900; 
+            pointer-events: none;
+            opacity: 0; 
+            transition: all 0.3s; 
+            text-shadow: 2px 2px 0 white; 
+            z-index: 100;
+        }
+        /* 游戏容器与阴影 */
+        #game-wrapper {
+            width: 95%; 
+            max-width: 420px; 
+            position: relative; 
+            margin: 10px auto;
+            background: white; 
+            padding: 10px; 
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(211, 84, 0, 0.2); 
+            border: 4px solid var(--gold);
+            display: none;
+        }
+        canvas { 
+            width: 100%; 
+            display: block; 
+            border-radius: 12px; 
+            background: #fffcf5; 
+        }
+        /* 总结面板优化 */
+        .overlay {
+            position: absolute; 
+            inset: 0; 
+            background: rgba(255,255,255,0.95);
+            display: none; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            z-index: 200; 
+            border-radius: 16px; 
+            padding: 20px; 
+            text-align: center;
+            overflow-y: auto;
+        }
+        .overlay::-webkit-scrollbar {
+            width: 6px;
+        }
+        .overlay::-webkit-scrollbar-track {
+            background: rgba(255,248,230,0.5);
+        }
+        .overlay::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 3px;
+        }
+        .share-card { 
+            background: white; 
+            border: 2px dashed var(--gold); 
+            padding: 15px; 
+            border-radius: 15px; 
+            margin-bottom: 15px; 
+        }
+        .route-summary-container { 
+            width: 240px; 
+            height: 160px; 
+            background: #fef9ef; 
+            border: 1px solid #ddd; 
+            margin: 10px auto; 
+        }
+        /* 按钮设计 */
+        .btn-group { 
+            display: flex; 
+            gap: 10px; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+        }
+        .btn {
+            padding: 10px 20px; 
+            border-radius: 50px; 
+            border: none; 
+            font-weight: bold;
+            cursor: pointer; 
+            transition: transform 0.1s; 
+            box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+            margin: 8px;
+        }
+        .btn-main { 
+            background: var(--red); 
+            color: white; 
+        }
+        .btn-sub { 
+            background: var(--gold); 
+            color: white; 
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--orange) 0%, #d35400 100%);
+            color: white;
+            padding: 12px 25px;
+            font-size: 18px;
+        }
+        .btn:active { 
+            transform: translateY(2px); 
+            box-shadow: none; 
+        }
+        /* 暂停面板 */
+        #pause-panel {
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0.95);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            border-radius: 16px;
+            padding: 20px;
+        }
+        .panel-title {
+            font-size: 28px;
+            color: var(--orange);
+            margin-bottom: 20px;
+        }
+        /* 跟随手指的摇杆样式 */
+        #joystick-area {
+            margin: 20px auto; 
+            width: 140px; 
+            height: 140px; 
+            background: radial-gradient(circle at center, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.6) 70%, rgba(243, 156, 18, 0.2) 100%);
+            border-radius: 50%; 
+            position: relative; 
+            border: 2px solid rgba(243, 156, 18, 0.3);
+            display: none;
+            touch-action: none; 
+            z-index: 50;
+            -webkit-user-select: none;
+            user-select: none;
+            cursor: pointer;
+        }
+        #knob {
+            width: 55px; 
+            height: 55px; 
+            background: var(--gold); 
+            border-radius: 50%;
+            position: absolute; 
+            left: 42.5px; 
+            top: 42.5px; 
+            box-shadow: 0 0 0 4px rgba(243, 156, 18, 0.3), 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.05s ease-out;
+            touch-action: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            border: 3px solid rgba(255, 255, 255, 0.8);
+        }
         /* 排行榜弹窗 */
         #rank-modal {
             position: fixed;
@@ -345,16 +530,17 @@
             gap: 20px;
             width: 90%;
             max-width: 380px;
-            z-index: 1000;
-            border: 3px solid #f39c12;
+            z-index: 1001;
+            border: 3px solid var(--gold);
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
         }
-
         .rank-list {
             width: 100%;
             max-height: 300px;
             overflow-y: auto;
         }
-
         .rank-item {
             display: flex;
             justify-content: space-between;
@@ -362,45 +548,144 @@
             border-bottom: 1px solid #eee;
             font-size: 16px;
         }
-
         .rank-num {
-            color: #e67e22;
+            color: var(--orange);
             font-weight: bold;
             width: 30px;
         }
-
         .rank-score {
             color: #2c3e50;
             font-weight: bold;
         }
-
         .rank-date {
             color: #7f8c8d;
             font-size: 14px;
         }
+        /* 遮罩层 */
+        #mask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            display: none;
+        }
+        /* 加载提示样式 */
+        #upload-tip {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 15px 30px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border-radius: 8px;
+            font-size: 16px;
+            z-index: 9999;
+            display: none;
+        }
+        /* 电脑端优化 */
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+            }
+            #game-home, #game-wrapper {
+                max-width: 500px;
+            }
+            .header {
+                max-width: 500px;
+            }
+        }
+        /* 手机端优化 */
+        @media (max-width: 767px) {
+            #ai-toggle {
+                top: 10px;
+                left: 10px;
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+            .audio-controls {
+                top: 10px;
+                right: 10px;
+            }
+            .audio-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+            #game-home, #game-wrapper {
+                width: 100%;
+                margin: 10px auto;
+            }
+            .home-title {
+                font-size: 30px;
+            }
+            .preview-container {
+                flex-direction: row;
+                gap: 10px;
+            }
+            .preview-item {
+                min-width: 70px;
+                max-width: 80px;
+            }
+            .preview-box {
+                width: 70px;
+                height: 70px;
+            }
+            .header {
+                justify-content: center;
+            }
+            .stat-box {
+                font-size: 14px;
+                padding: 5px 10px;
+            }
+            /* 移动端摇杆优化 */
+            #joystick-area {
+                width: 120px;
+                height: 120px;
+            }
+            #knob {
+                width: 50px;
+                height: 50px;
+                left: 35px;
+                top: 35px;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- 遮罩层 -->
+    <div id="mask"></div>
+    <!-- AI 开关 -->
+    <div id="ai-toggle" title="AI 最短路径规划">🧠</div>
     <!-- 音效/音乐控制 -->
     <div class="audio-controls">
         <div class="audio-btn" id="music-btn" title="背景音乐">🎵</div>
         <div class="audio-btn" id="sound-btn" title="游戏音效">🔊</div>
     </div>
-
     <!-- 游戏引导页 -->
     <div id="guide-page">
         <div class="guide-content">
-            <h2 class="guide-title">🐍 游戏玩法指南</h2>
+            <h2 class="guide-title">🐍 2026马年新春贪吃蛇</h2>
             
             <div class="guide-item">
                 <strong>🎮 操控方式：</strong><br>
-                • 键盘：方向键控制蛇的移动<br>
-                • 圆盘：滑动圆盘控制方向
+                • 电脑：方向键控制蛇的移动；圆盘模式可鼠标拖动操控<br>
+                • 手机：摇杆完全跟随手指移动，360°自由控制
+            </div>
+            
+            <div class="guide-item">
+                <strong>🧠 AI 最短路径：</strong><br>
+                • 点击左上角 🧠 开启/关闭 AI 自动寻路<br>
+                • AI 会自动规划最短路径去吃苹果
             </div>
             
             <div class="guide-item">
                 <strong>🍎 得分规则：</strong><br>
-                • 吃到苹果+1分<br>
+                • 吃到苹果+10分，连击分数翻倍<br>
                 • 蛇越长，难度越高
             </div>
             
@@ -411,7 +696,8 @@
             
             <div class="guide-item">
                 <strong>🎨 皮肤更换：</strong><br>
-                • 选择不同皮肤，蛇的外观会变化
+                • 支持预设皮肤和自定义上传图片作为蛇头、蛇身、蛇尾皮肤<br>
+                • 自定义皮肤会应用到游戏过程中的每一节身体
             </div>
             
             <div class="guide-item">
@@ -419,34 +705,92 @@
                 • 自动记录你的最高分数
             </div>
             
+            <div class="guide-item">
+                <strong>📊 战报总结：</strong><br>
+                • 游戏结束后可查看新春战报和路线轨迹
+            </div>
+            
             <button class="btn btn-primary" onclick="closeGuide()">开始游戏</button>
         </div>
     </div>
-
-    <!-- 首页 -->
+    <!-- 自定义皮肤弹窗 - 升级为蛇头/蛇身/蛇尾 -->
+    <div id="custom-skin-modal">
+        <h3 class="modal-title">🎨 自定义蛇皮肤</h3>
+        <!-- 蛇头上传 -->
+        <div class="skin-upload-group">
+            <label class="upload-label" for="head-upload">
+                🐍 点击上传蛇头图片
+            </label>
+            <input type="file" id="head-upload" accept="image/*">
+            <p class="upload-tip">支持JPG/PNG格式，建议60x60正方形图片（透明背景更佳）</p>
+        </div>
+        <!-- 蛇身上传 -->
+        <div class="skin-upload-group">
+            <label class="upload-label" for="body-upload">
+                📏 点击上传蛇身图片
+            </label>
+            <input type="file" id="body-upload" accept="image/*">
+            <p class="upload-tip">支持JPG/PNG格式，建议60x60正方形图片（透明背景更佳）</p>
+        </div>
+        <!-- 新增：蛇尾上传 -->
+        <div class="skin-upload-group">
+            <label class="upload-label" for="tail-upload">
+                🌀 点击上传蛇尾图片
+            </label>
+            <input type="file" id="tail-upload" accept="image/*">
+            <p class="upload-tip">支持JPG/PNG格式，建议60x60正方形图片（透明背景更佳）</p>
+        </div>
+        <!-- 预览容器 - 三个预览 -->
+        <div class="preview-container">
+            <div class="preview-item">
+                <div class="preview-box" id="head-preview">
+                    <span>蛇头预览</span>
+                </div>
+                <p>蛇头</p>
+            </div>
+            <div class="preview-item">
+                <div class="preview-box" id="body-preview">
+                    <span>蛇身预览</span>
+                </div>
+                <p>蛇身</p>
+            </div>
+            <div class="preview-item">
+                <div class="preview-box" id="tail-preview">
+                    <span>蛇尾预览</span>
+                </div>
+                <p>蛇尾</p>
+            </div>
+        </div>
+        <div class="modal-btn-group">
+            <button class="btn btn-sub" onclick="cancelCustomSkin()">取消</button>
+            <button class="btn btn-main" onclick="confirmCustomSkin()">确认使用</button>
+        </div>
+    </div>
+    <!-- 首页（修复操控/难度按钮布局） -->
     <div id="game-home">
         <h1 class="home-title">我是贪吃蛇 🐍</h1>
         <div class="year-theme">🐴 2026马年新春版 🧧</div>
-
         <!-- 操控方式 -->
         <div class="option-group">
-            <div class="option-title">🎮 操控方式</div>
+            <div class="option-title" style="display: flex; align-items: center; gap: 8px;">
+                <span>🎮</span> 操控方式
+            </div>
             <div class="mode-options">
                 <button class="mode-btn active" data-control="keyboard">键盘操控</button>
-                <button class="mode-btn" data-control="joystick">圆盘操控</button>
+                <button class="mode-btn" data-control="joystick">摇杆操控</button>
             </div>
         </div>
-
         <!-- 难度选择 -->
         <div class="option-group">
-            <div class="option-title">🐢 游戏难度</div>
+            <div class="option-title" style="display: flex; align-items: center; gap: 8px; margin-top: 15px;">
+                <span>🐢</span> 游戏难度
+            </div>
             <div class="mode-options">
                 <button class="mode-btn active" data-speed="200">简单</button>
                 <button class="mode-btn" data-speed="150">中等</button>
                 <button class="mode-btn" data-speed="120">困难</button>
             </div>
         </div>
-
         <!-- 皮肤选择 -->
         <div class="option-group">
             <div class="option-title">🎨 蛇蛇皮肤</div>
@@ -456,71 +800,78 @@
                 <div class="skin-btn" data-skin="gold" title="黄金">🟡</div>
                 <div class="skin-btn" data-skin="green" title="翡翠">🟢</div>
                 <div class="skin-btn" data-skin="blue" title="宝石">🔵</div>
+                <div class="skin-btn custom-skin-btn" id="custom-skin-btn" title="自定义皮肤">
+                    📷<br>自定义
+                </div>
             </div>
         </div>
-
         <!-- 功能按钮 -->
         <button class="btn btn-primary" id="start-btn">开始游戏 🎮</button>
-        <button class="btn btn-secondary" onclick="showRank()">查看排行榜 🏆</button>
+        <button class="btn btn-sub" onclick="showRank()">查看排行榜 🏆</button>
     </div>
-
-    <!-- 游戏主容器 -->
-    <div id="game-container" style="display: none;">
-        <div class="game-header">
-            <div class="game-title-small">我是贪吃蛇 🐍</div>
-            <div class="score-panel">
-                <div class="score">分数：<span id="score">0</span></div>
-                <div class="score">最高分：<span id="highest">0</span></div>
-            </div>
-        </div>
-
-        <div id="canvas-wrapper">
-            <canvas id="game-canvas"></canvas>
-
-            <!-- 暂停面板 -->
-            <div class="overlay-panel" id="pause-panel">
-                <h2 class="panel-title">游戏暂停 ⏸️</h2>
-                <button class="btn btn-primary" onclick="togglePause()">继续游戏</button>
-                <button class="btn btn-secondary" onclick="backToHome()">返回首页</button>
-            </div>
-
-            <!-- 结束面板 -->
-            <div class="overlay-panel" id="over-panel">
-                <h2 class="panel-title">游戏结束 😢</h2>
-                <div style="font-size: 20px;">最终分数：<span id="final-score">0</span></div>
-                <button class="btn btn-primary" onclick="restartGame()">再来一次 🎮</button>
-                <button class="btn btn-secondary" onclick="backToHome()">返回首页 🏠</button>
-                <button class="btn btn-success" onclick="showRank()">查看排行榜 🏆</button>
-            </div>
-        </div>
-
-        <!-- 圆盘操控 - 确保存在 -->
-        <div id="joystick-panel">
-            <div class="joystick-bg">
-                <div class="joystick-knob" id="joystick"></div>
-            </div>
+    <!-- 游戏界面 -->
+    <div class="header" id="game-header" style="display: none;">
+        <div class="stat-box">得分: <span id="score">0</span></div>
+        <div class="stat-box" id="combo-ui">Combo x1</div>
+        <div class="stat-box">最高: <span id="high-score">0</span></div>
+        <!-- 游戏控制按钮（修复重叠） -->
+        <div class="game-controls">
+            <button class="btn btn-sub" id="pause-btn" title="暂停游戏">⏸️</button>
+            <button class="btn btn-main" id="home-btn" title="返回主页">🏠</button>
         </div>
     </div>
-
+    <div id="game-wrapper">
+        <div id="combo-tip">COMBO!</div>
+        <canvas id="game-canvas"></canvas>
+        <!-- 暂停面板 -->
+        <div id="pause-panel">
+            <h2 class="panel-title">游戏暂停 ⏸️</h2>
+            <button class="btn btn-main" onclick="togglePause()">继续游戏</button>
+            <button class="btn btn-sub" onclick="backToHome()">返回首页</button>
+        </div>
+        <!-- 结束面板（新春战报） -->
+        <div id="over-panel" class="overlay">
+            <h2 style="color: var(--red); margin-bottom: 10px;">🧧 马到成功 · 战报</h2>
+            <div class="share-card">
+                <div id="achievement-title" style="font-weight: bold; color: #d35400;">[ 丛林萌蛇 ]</div>
+                <div class="route-summary-container">
+                    <canvas id="route-summary-map"></canvas>
+                </div>
+                <p style="font-size: 12px; color: #666;">
+                    步数: <span id="res-steps">0</span> | 
+                    苹果: <span id="res-apples">0</span> | 
+                    难度: <span id="res-difficulty">简单</span>
+                </p>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-main" onclick="restartGame()">再创辉煌</button>
+                <button class="btn btn-sub" onclick="saveAsImage()">分享战绩</button>
+                <button class="btn btn-sub" onclick="backToHome()">返回首页</button>
+            </div>
+        </div>
+    </div>
+    <!-- 跟随手指移动的摇杆 -->
+    <div id="joystick-area">
+        <div id="knob"></div>
+    </div>
     <!-- 排行榜弹窗 -->
     <div id="rank-modal">
-        <h2 class="panel-title">🏆 游戏排行榜</h2>
+        <h2 class="panel-title">🏆 新春排行榜</h2>
         <div class="rank-list" id="rank-list">
             <!-- 排行榜内容动态生成 -->
         </div>
-        <button class="btn btn-secondary" onclick="closeRank()">关闭</button>
+        <button class="btn btn-sub" onclick="closeRank()">关闭</button>
     </div>
-
     <!-- 音频资源 -->
     <audio id="bg-music" loop>
         <source src="https://assets.mixkit.co/music/preview/mixkit-joyful-festival-1369.mp3" type="audio/mpeg">
-    
+    </audio>
     <audio id="eat-sound">
         <source src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3" type="audio/mpeg">
-    
+    </audio>
     <audio id="hit-sound">
         <source src="https://assets.mixkit.co/sfx/preview/mixkit-player-losing-or-failing-2042.mp3" type="audio/mpeg">
-    
+    </audio>
 
     <script>
         // ========== 核心配置 ==========
@@ -531,17 +882,42 @@
             gridSize: 20,
             musicOn: true,
             soundOn: true,
-            joystickDeadZone: 5 // 优化：减小死区，提升灵敏度
+            aiEnabled: false,
+            isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
+            // 自定义皮肤配置 - 升级为蛇头/蛇身/蛇尾
+            customSkin: {
+                enabled: false,
+                headImg: null,      
+                bodyImg: null,      
+                tailImg: null,      
+                headImgUrl: "",     
+                bodyImgUrl: "",     
+                tailImgUrl: "",     
+                headLoaded: false,  
+                bodyLoaded: false,
+                tailLoaded: false,  
+                forceApply: false
+            },
+            colors: {
+                year: { head: "#e67e22", body: "#f39c12", eye: "#fff", bg: "#fff8e6" },
+                red: { head: "#e74c3c", body: "#c0392b", eye: "#fff", bg: "#ffebee" },
+                gold: { head: "#f1c40f", body: "#f39c12", eye: "#000", bg: "#fff9c4" },
+                green: { head: "#2ecc71", body: "#27ae60", eye: "#fff", bg: "#e8f5e9" },
+                blue: { head: "#3498db", body: "#2980b9", eye: "#fff", bg: "#e3f2fd" }
+            }
         };
 
-        // 皮肤主题
-        const skins = {
-            year: { head: "#e67e22", body: "#f39c12", eye: "#fff", bg: "#fff8e6" },
-            red: { head: "#e74c3c", body: "#c0392b", eye: "#fff", bg: "#ffebee" },
-            gold: { head: "#f1c40f", body: "#f39c12", eye: "#000", bg: "#fff9c4" },
-            green: { head: "#2ecc71", body: "#27ae60", eye: "#fff", bg: "#e8f5e9" },
-            blue: { head: "#3498db", body: "#2980b9", eye: "#fff", bg: "#e3f2fd" }
+        // 新增：皮肤加载状态全局变量
+        let skinLoadState = {
+            isCustomSelected: false, 
+            isAllLoaded: false,      
+            loadTip: ""              
         };
+
+        // 摇杆核心变量（跟随手指专用）
+        let joystickActive = false;
+        let joystickX = 0;
+        let joystickY = 0;
 
         // 游戏核心变量
         let canvas, ctx;
@@ -553,85 +929,493 @@
         let highest = 0;
         let gameLoop = null;
         let isPaused = false;
+        let isGameOver = false;
         let rankData = [];
-
+        let combo = 1;
+        let comboSteps = 0;
+        let moveRoute = [];
+        let appleCount = 0;
+        let gameStartTime = 0;
         // DOM元素缓存
         const dom = {
             gameHome: document.getElementById("game-home"),
-            gameContainer: document.getElementById("game-container"),
+            gameHeader: document.getElementById("game-header"),
+            gameWrapper: document.getElementById("game-wrapper"),
             canvas: document.getElementById("game-canvas"),
-            joystickPanel: document.getElementById("joystick-panel"),
+            joystickArea: document.getElementById("joystick-area"),
+            overPanel: document.getElementById("over-panel"),
+            pausePanel: document.getElementById("pause-panel"),
+            customSkinModal: document.getElementById("custom-skin-modal"),
+            customSkinBtn: document.getElementById("custom-skin-btn"),
+            headUpload: document.getElementById("head-upload"),
+            bodyUpload: document.getElementById("body-upload"),
+            tailUpload: document.getElementById("tail-upload"),
+            headPreview: document.getElementById("head-preview"),
+            bodyPreview: document.getElementById("body-preview"),
+            tailPreview: document.getElementById("tail-preview"),
+            mask: document.getElementById("mask"),
             audio: {
                 bgMusic: document.getElementById("bg-music"),
                 eatSound: document.getElementById("eat-sound"),
                 hitSound: document.getElementById("hit-sound")
             }
         };
-
         // ========== 初始化 ==========
         window.onload = function() {
+            if (config.isMobile) {
+                document.querySelector('[data-control="joystick"]').click();
+            }
             initCanvas();
+            initSummaryCanvas();
             loadHighestScore();
             loadRankData();
             bindAllEvents();
+            bindCustomSkinEvents();
+            bindModalCloseEvents();
             playBgMusic();
+            initJoystick(); // 初始化跟随手指的摇杆
             initGameData();
             drawGame();
+            
+            // 新增：初始化开始游戏按钮状态
+            updateSkinLoadState();
+            updateStartBtnState();
+            
+            window.addEventListener('resize', () => {
+                if (!isGameOver) {
+                    resizeCanvas();
+                    drawGame();
+                }
+            });
         };
-
+        // ========== 弹窗关闭事件绑定 ==========
+        function bindModalCloseEvents() {
+            dom.mask.addEventListener("click", function() {
+                dom.customSkinModal.style.display = "none";
+                dom.rankModal.style.display = "none";
+                dom.mask.style.display = "none";
+            });
+            const modalContents = [
+                dom.customSkinModal,
+                dom.rankModal,
+                document.querySelector('.guide-content')
+            ];
+            modalContents.forEach(el => {
+                if (el) {
+                    el.addEventListener("click", function(e) {
+                        e.stopPropagation();
+                    });
+                }
+            });
+        }
         // ========== Canvas初始化 ==========
         function initCanvas() {
             canvas = dom.canvas;
             ctx = canvas.getContext("2d");
             resizeCanvas();
-            window.addEventListener("resize", resizeCanvas);
         }
-
+        function initSummaryCanvas() {
+            const sCanvas = document.getElementById("route-summary-map");
+            sCanvas.width = 240;
+            sCanvas.height = 160;
+        }
         function resizeCanvas() {
-            const wrapper = document.getElementById("canvas-wrapper");
-            const size = wrapper.clientWidth;
+            const wrapper = document.getElementById("game-wrapper");
+            const size = Math.min(wrapper.clientWidth - 20, 400);
             canvas.width = size;
             canvas.height = size;
-            if (snake.length > 0) drawGame();
         }
-
         // ========== 事件绑定 ==========
         function bindAllEvents() {
-            document.getElementById("guide-page").style.display = "flex";
-            
-            // 音效/音乐开关
+            document.getElementById("ai-toggle").addEventListener("click", toggleAI);
             document.getElementById("music-btn").addEventListener("click", toggleMusic);
             document.getElementById("sound-btn").addEventListener("click", toggleSound);
-            
-            // 操控方式选择
             document.querySelectorAll(".mode-btn").forEach(btn => {
                 btn.addEventListener("click", (e) => {
                     const siblings = Array.from(btn.parentElement.children);
                     siblings.forEach(b => b.classList.remove("active"));
                     btn.classList.add("active");
-                    
                     if (btn.dataset.control) config.control = btn.dataset.control;
                     if (btn.dataset.speed) config.speed = parseInt(btn.dataset.speed);
                 });
             });
-            
-            // 皮肤选择
-            document.querySelectorAll(".skin-btn").forEach(btn => {
+            document.querySelectorAll(".skin-btn:not(#custom-skin-btn)").forEach(btn => {
                 btn.addEventListener("click", () => {
+                    config.customSkin.enabled = false;
+                    config.customSkin.headLoaded = false;
+                    config.customSkin.bodyLoaded = false;
+                    config.customSkin.tailLoaded = false;
+                    config.customSkin.forceApply = false;
                     document.querySelectorAll(".skin-btn").forEach(b => b.classList.remove("active"));
                     btn.classList.add("active");
                     config.skin = btn.dataset.skin;
-                    drawGame();
+                    if (!isGameOver) drawGame();
                 });
             });
-            
-            // 开始游戏按钮
             document.getElementById("start-btn").addEventListener("click", startGame);
-            
-            // 键盘控制
             document.addEventListener("keydown", handleKeydown);
+            document.addEventListener("keydown", (e) => {
+                if (e.key === " " && dom.gameWrapper.style.display !== "none" && !isGameOver) {
+                    togglePause();
+                }
+            });
+            document.getElementById("pause-btn").addEventListener("click", togglePause);
+            document.getElementById("home-btn").addEventListener("click", backToHome);
+        }
+        // ========== 自定义皮肤事件（升级为蛇头/蛇身/蛇尾） ==========
+        function bindCustomSkinEvents() {
+            dom.customSkinBtn.addEventListener("click", () => {
+                dom.mask.style.display = "block";
+                dom.customSkinModal.style.display = "block";
+            });
+
+            // 蛇头上传
+            dom.headUpload.addEventListener("change", (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    config.customSkin.headLoaded = false;
+                    updateSkinLoadState();
+                    skinLoadState.loadTip = "正在加载蛇头图片...";
+                    updateStartBtnState();
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = new Image();
+                        img.crossOrigin = "anonymous";
+                        img.onload = function() {
+                            config.customSkin.headImg = img;
+                            config.customSkin.headImgUrl = e.target.result;
+                            config.customSkin.headLoaded = true;
+                            skinLoadState.loadTip = "蛇头图片加载完成！";
+                            updateSkinLoadState();
+                            updateStartBtnState();
+                            dom.headPreview.innerHTML = "";
+                            const imgEl = document.createElement("img");
+                            imgEl.src = e.target.result;
+                            imgEl.className = "preview-img";
+                            dom.headPreview.appendChild(imgEl);
+                            if (dom.gameWrapper.style.display === "block" && !isGameOver) {
+                                drawGame();
+                            }
+                        };
+                        img.onerror = function() {
+                            alert("蛇头图片加载失败！");
+                            config.customSkin.headLoaded = false;
+                            skinLoadState.loadTip = "蛇头图片加载失败，请重新上传！";
+                            updateSkinLoadState();
+                            updateStartBtnState();
+                        };
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // 蛇身上传
+            dom.bodyUpload.addEventListener("change", (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    config.customSkin.bodyLoaded = false;
+                    updateSkinLoadState();
+                    skinLoadState.loadTip = "正在加载蛇身图片...";
+                    updateStartBtnState();
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = new Image();
+                        img.crossOrigin = "anonymous";
+                        img.onload = function() {
+                            config.customSkin.bodyImg = img;
+                            config.customSkin.bodyImgUrl = e.target.result;
+                            config.customSkin.bodyLoaded = true;
+                            skinLoadState.loadTip = "蛇身图片加载完成！";
+                            updateSkinLoadState();
+                            updateStartBtnState();
+                            dom.bodyPreview.innerHTML = "";
+                            const imgEl = document.createElement("img");
+                            imgEl.src = e.target.result;
+                            imgEl.className = "preview-img";
+                            dom.bodyPreview.appendChild(imgEl);
+                            if (dom.gameWrapper.style.display === "block" && !isGameOver) {
+                                drawGame();
+                            }
+                        };
+                        img.onerror = function() {
+                            alert("蛇身图片加载失败！");
+                            config.customSkin.bodyLoaded = false;
+                            skinLoadState.loadTip = "蛇身图片加载失败，请重新上传！";
+                            updateSkinLoadState();
+                            updateStartBtnState();
+                        };
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // 蛇尾上传事件
+            dom.tailUpload.addEventListener("change", (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    config.customSkin.tailLoaded = false;
+                    updateSkinLoadState();
+                    skinLoadState.loadTip = "正在加载蛇尾图片...";
+                    updateStartBtnState();
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = new Image();
+                        img.crossOrigin = "anonymous";
+                        img.onload = function() {
+                            config.customSkin.tailImg = img;
+                            config.customSkin.tailImgUrl = e.target.result;
+                            config.customSkin.tailLoaded = true;
+                            skinLoadState.loadTip = "蛇尾图片加载完成！";
+                            updateSkinLoadState();
+                            updateStartBtnState();
+                            dom.tailPreview.innerHTML = "";
+                            const imgEl = document.createElement("img");
+                            imgEl.src = e.target.result;
+                            imgEl.className = "preview-img";
+                            dom.tailPreview.appendChild(imgEl);
+                            if (dom.gameWrapper.style.display === "block" && !isGameOver) {
+                                drawGame();
+                            }
+                        };
+                        img.onerror = function() {
+                            alert("蛇尾图片加载失败！");
+                            config.customSkin.tailLoaded = false;
+                            skinLoadState.loadTip = "蛇尾图片加载失败，请重新上传！";
+                            updateSkinLoadState();
+                            updateStartBtnState();
+                        };
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+        // ========== 皮肤加载状态管理 ==========
+        function updateSkinLoadState() {
+            skinLoadState.isCustomSelected = dom.customSkinBtn.classList.contains("active");
+            skinLoadState.isAllLoaded = config.customSkin.headLoaded && config.customSkin.bodyLoaded && config.customSkin.tailLoaded;
+            
+            if (!skinLoadState.isCustomSelected) {
+                skinLoadState.isAllLoaded = true;
+                skinLoadState.loadTip = "";
+            } else if (skinLoadState.isCustomSelected && !skinLoadState.isAllLoaded) {
+                skinLoadState.loadTip = skinLoadState.loadTip || "请等待所有皮肤图片加载完成...";
+            } else {
+                skinLoadState.loadTip = "所有皮肤加载完成，可以开始游戏！";
+            }
         }
 
+        function updateStartBtnState() {
+            const startBtn = document.getElementById("start-btn");
+            if (skinLoadState.isCustomSelected && !skinLoadState.isAllLoaded) {
+                startBtn.disabled = true;
+                startBtn.style.opacity = "0.6";
+                startBtn.style.cursor = "not-allowed";
+                startBtn.innerHTML = `⏳ ${skinLoadState.loadTip}`;
+            } else {
+                startBtn.disabled = false;
+                startBtn.style.opacity = "1";
+                startBtn.style.cursor = "pointer";
+                startBtn.innerHTML = "开始游戏 🎮";
+            }
+        }
+
+        document.querySelectorAll(".skin-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                setTimeout(() => {
+                    updateSkinLoadState();
+                    updateStartBtnState();
+                }, 100);
+            });
+        });
+        // ========== 弹窗控制函数 ==========
+        function closeGuide() {
+            document.getElementById("guide-page").style.display = "none";
+        }
+        function showRank() {
+            dom.mask.style.display = "block";
+            dom.rankModal.style.display = "flex";
+            renderRank();
+        }
+        function closeRank() {
+            dom.rankModal.style.display = "none";
+            dom.mask.style.display = "none";
+        }
+        function cancelCustomSkin() {
+            dom.mask.style.display = "none";
+            dom.customSkinModal.style.display = "none";
+            dom.headUpload.value = "";
+            dom.bodyUpload.value = "";
+            dom.tailUpload.value = "";
+            dom.headPreview.innerHTML = "<span>蛇头预览</span>";
+            dom.bodyPreview.innerHTML = "<span>蛇身预览</span>";
+            dom.tailPreview.innerHTML = "<span>蛇尾预览</span>";
+        }
+        function confirmCustomSkin() {
+            if (!config.customSkin.headLoaded || !config.customSkin.bodyLoaded || !config.customSkin.tailLoaded) {
+                alert("请上传并等待所有图片（蛇头、蛇身、蛇尾）加载完成！");
+                return;
+            }
+            config.skin = "custom";
+            config.customSkin.enabled = true;
+            config.customSkin.forceApply = true;
+            document.querySelectorAll(".skin-btn").forEach(b => b.classList.remove("active"));
+            dom.customSkinBtn.classList.add("active");
+            skinLoadState.isCustomSelected = true;
+            skinLoadState.isAllLoaded = true;
+            updateStartBtnState();
+            cancelCustomSkin();
+            if (dom.gameWrapper.style.display === "block" && !isGameOver) {
+                drawGame();
+            } else {
+                initGameData();
+                drawGame();
+            }
+        }
+        // ========== 工具函数 ==========
+        function playSound(type) {
+            if (!config.soundOn) return;
+            const sound = dom.audio[type];
+            if (sound) {
+                sound.currentTime = 0;
+                sound.play().catch(e => console.log("音效播放失败:", e));
+            }
+        }
+        function playBgMusic() {
+            if (config.musicOn) {
+                dom.audio.bgMusic.play().catch(e => console.log("背景音乐播放失败:", e));
+            }
+        }
+        function toggleMusic() {
+            config.musicOn = !config.musicOn;
+            const btn = document.getElementById("music-btn");
+            if (config.musicOn) {
+                dom.audio.bgMusic.play();
+                btn.style.background = "rgba(255,255,255,0.9)";
+                btn.style.color = "#f39c12";
+            } else {
+                dom.audio.bgMusic.pause();
+                btn.style.background = "#e74c3c";
+                btn.style.color = "white";
+            }
+        }
+        function toggleSound() {
+            config.soundOn = !config.soundOn;
+            const btn = document.getElementById("sound-btn");
+            if (!config.soundOn) {
+                btn.style.background = "#e74c3c";
+                btn.style.color = "white";
+            } else {
+                btn.style.background = "rgba(255,255,255,0.9)";
+                btn.style.color = "#f39c12";
+            }
+        }
+        function toggleAI() {
+            config.aiEnabled = !config.aiEnabled;
+            const btn = document.getElementById("ai-toggle");
+            if (config.aiEnabled) {
+                btn.classList.add("ai-on");
+            } else {
+                btn.classList.remove("ai-on");
+            }
+        }
+        // ========== 完全跟随手指的摇杆初始化函数 ==========
+        function initJoystick() {
+            const stick = document.getElementById("joystick-area");
+            const knob = document.getElementById("knob");
+
+            const radius = stick.offsetWidth / 2;
+            const knobRadius = knob.offsetWidth / 2;
+            const maxMove = radius - knobRadius;
+
+            // 计算小球位置
+            function getKnobPosition(clientX, clientY) {
+                const rect = stick.getBoundingClientRect();
+                const centerX = rect.left + radius;
+                const centerY = rect.top + radius;
+
+                let dx = clientX - centerX;
+                let dy = clientY - centerY;
+
+                const dist = Math.sqrt(dx*dx + dy*dy);
+
+                if (dist > maxMove) {
+                    const scale = maxMove / dist;
+                    dx *= scale;
+                    dy *= scale;
+                }
+
+                return { x: dx, y: dy };
+            }
+
+            // 移动小球
+            function moveKnob(x, y) {
+                knob.style.transform = `translate(${x}px, ${y}px)`;
+            }
+
+            // 触摸开始
+            stick.addEventListener("touchstart", (e) => {
+                e.preventDefault();
+                joystickActive = true;
+                const touch = e.touches[0];
+                const pos = getKnobPosition(touch.clientX, touch.clientY);
+                moveKnob(pos.x, pos.y);
+                // 计算摇杆方向值
+                joystickX = pos.x / maxMove;
+                joystickY = pos.y / maxMove;
+            }, { passive: false });
+
+            // 触摸移动（核心：实时跟随手指）
+            document.addEventListener("touchmove", (e) => {
+                if (!joystickActive) return;
+                e.preventDefault();
+                const touch = e.touches[0];
+                const pos = getKnobPosition(touch.clientX, touch.clientY);
+                moveKnob(pos.x, pos.y);
+                // 实时更新方向值
+                joystickX = pos.x / maxMove;
+                joystickY = pos.y / maxMove;
+            }, { passive: false });
+
+            // 触摸结束
+            document.addEventListener("touchend", () => {
+                if (!joystickActive) return;
+                joystickActive = false;
+                moveKnob(0, 0); // 回到中心
+                joystickX = 0;
+                joystickY = 0;
+            });
+
+            // 鼠标支持
+            stick.addEventListener("mousedown", (e) => {
+                joystickActive = true;
+                const pos = getKnobPosition(e.clientX, e.clientY);
+                moveKnob(pos.x, pos.y);
+                joystickX = pos.x / maxMove;
+                joystickY = pos.y / maxMove;
+            });
+
+            document.addEventListener("mousemove", (e) => {
+                if (!joystickActive) return;
+                const pos = getKnobPosition(e.clientX, e.clientY);
+                moveKnob(pos.x, pos.y);
+                joystickX = pos.x / maxMove;
+                joystickY = pos.y / maxMove;
+            });
+
+            document.addEventListener("mouseup", () => {
+                if (!joystickActive) return;
+                joystickActive = false;
+                moveKnob(0, 0);
+                joystickX = 0;
+                joystickY = 0;
+            });
+        }
         // ========== 游戏核心逻辑 ==========
         function initGameData() {
             const mid = Math.floor(config.gridSize / 2);
@@ -642,66 +1426,144 @@
             ];
             dx = 0;
             dy = -1;
+            joystickX = 0;
+            joystickY = 0;
             generateFood();
             score = 0;
+            combo = 1;
+            comboSteps = 0;
+            moveRoute = [];
+            appleCount = 0;
+            isGameOver = false;
+            isPaused = false;
+            moveRoute.push({x: mid, y: mid, isApple: false});
             document.getElementById("score").innerText = "0";
+            document.getElementById("combo-ui").innerText = "Combo x1";
+            document.getElementById("high-score").innerText = highest;
+            dom.overPanel.style.display = "none";
+            dom.pausePanel.style.display = "none";
         }
-
+        
         function startGame() {
-            dom.gameHome.style.display = "none";
-            dom.gameContainer.style.display = "flex";
-            resizeCanvas();
-            
-            // 显示圆盘操控
-            if (config.control === "joystick") {
-                dom.joystickPanel.style.display = "block";
-                initJoystick(); // 初始化圆盘
-            } else {
-                dom.joystickPanel.style.display = "none";
-            }
-            
-            initGameData();
-            clearInterval(gameLoop);
-            gameLoop = setInterval(updateGame, config.speed);
-            drawGame();
-        }
-
-        function updateGame() {
-            if (isPaused) return;
-            
-            const head = { x: snake[0].x + dx, y: snake[0].y + dy };
-            
-            if (head.x < 0 || head.x >= config.gridSize || head.y < 0 || head.y >= config.gridSize) {
-                gameOver();
+            if (skinLoadState.isCustomSelected && !skinLoadState.isAllLoaded) {
+                alert(`无法开始游戏：${skinLoadState.loadTip}`);
                 return;
             }
             
-            if (snake.some(s => s.x === head.x && s.y === head.y)) {
+            dom.gameHome.style.display = "none";
+            dom.gameHeader.style.display = "flex";
+            dom.gameWrapper.style.display = "block";
+            
+            if (config.control === "joystick") {
+                dom.joystickArea.style.display = "block";
+                joystickX = 0;
+                joystickY = 0;
+                dx = 0;
+                dy = -1;
+            } else {
+                dom.joystickArea.style.display = "none";
+            }
+            
+            gameStartTime = new Date().getTime();
+            initGameData();
+            clearInterval(gameLoop);
+            gameLoop = setInterval(updateGame, config.speed);
+            resizeCanvas();
+            requestAnimationFrame(drawGame);
+        }
+        
+        function updateGame() {
+            if (isPaused || isGameOver) return;
+
+            // ========== 摇杆方向控制（核心修复） ==========
+            if (config.control === "joystick") {
+                const deadzone = 0.2; // 死区，避免轻微触摸触发
+
+                if (Math.abs(joystickX) > Math.abs(joystickY)) {
+                    // 水平方向优先
+                    if (joystickX > deadzone && dx !== -1) {
+                        dx = 1; dy = 0;
+                    } else if (joystickX < -deadzone && dx !== 1) {
+                        dx = -1; dy = 0;
+                    }
+                } else {
+                    // 垂直方向优先
+                    if (joystickY > deadzone && dy !== -1) {
+                        dx = 0; dy = 1;
+                    } else if (joystickY < -deadzone && dy !== 1) {
+                        dx = 0; dy = -1;
+                    }
+                }
+            }
+            
+            if (config.aiEnabled) {
+                const aiDirection = findShortestPath();
+                if (aiDirection) {
+                    dx = aiDirection.x;
+                    dy = aiDirection.y;
+                }
+            }
+            
+            const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+            comboSteps++;
+            moveRoute.push({x: head.x, y: head.y, isApple: false});
+            const isWallCollision = head.x < 0 || head.x >= config.gridSize || head.y < 0 || head.y >= config.gridSize;
+            const isSelfCollision = snake.some((seg, index) => {
+                return index > 0 && seg.x === head.x && seg.y === head.y;
+            });
+            
+            if (isWallCollision || isSelfCollision) {
                 gameOver();
                 return;
             }
             
             snake.unshift(head);
-            
             if (head.x === food.x && head.y === food.y) {
-                score++;
-                document.getElementById("score").innerText = score;
+                handleScore();
+                appleCount++;
+                moveRoute[moveRoute.length-1].isApple = true;
                 playSound("eatSound");
                 generateFood();
+                if(navigator.vibrate) navigator.vibrate(20);
             } else {
                 snake.pop();
             }
             
             drawGame();
         }
-
+        
+        function handleScore() {
+            if(comboSteps < 10) {
+                combo++;
+                showComboEffect();
+            } else {
+                combo = 1;
+            }
+            score += (10 * combo);
+            document.getElementById("score").innerText = score;
+            document.getElementById("combo-ui").innerText = `Combo x${combo}`;
+            comboSteps = 0;
+        }
+        
+        function showComboEffect() {
+            const tip = document.getElementById('combo-tip');
+            tip.style.opacity = '1';
+            tip.style.transform = 'translate(-50%, -80%) scale(1.2)';
+            setTimeout(() => { 
+                tip.style.opacity = '0'; 
+                tip.style.transform = 'translate(-50%, -50%) scale(1)'; 
+            }, 500);
+        }
+        
+        // 绘制游戏
         function drawGame() {
             const cellSize = canvas.width / config.gridSize;
-            const skin = skins[config.skin];
-            
-            ctx.fillStyle = skin.bg;
+            let skin = config.colors[config.skin];
+            if (config.skin === "custom") {
+                skin = { head: "transparent", body: "transparent", tail: "transparent", eye: "#fff", bg: "#fffcf5" };
+            }
+            ctx.fillStyle = config.customSkin.enabled ? "#fffcf5" : skin.bg;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
             // 绘制网格
             ctx.strokeStyle = "rgba(0,0,0,0.05)";
             ctx.lineWidth = 1;
@@ -710,285 +1572,293 @@
                 ctx.moveTo(i * cellSize, 0);
                 ctx.lineTo(i * cellSize, canvas.height);
                 ctx.stroke();
-                
                 ctx.beginPath();
                 ctx.moveTo(0, i * cellSize);
                 ctx.lineTo(canvas.width, i * cellSize);
                 ctx.stroke();
             }
-            
             // 绘制蛇
             snake.forEach((seg, index) => {
                 const x = seg.x * cellSize;
                 const y = seg.y * cellSize;
-                
+                // 蛇头
                 if (index === 0) {
-                    ctx.fillStyle = skin.head;
-                    ctx.beginPath();
-                    ctx.roundRect(x + 2, y + 2, cellSize - 4, cellSize - 4, 12);
-                    ctx.fill();
-                    
-                    // 眼睛
-                    ctx.fillStyle = skin.eye;
-                    const eyeSize = cellSize / 6;
-                    let eye1X = x + cellSize * 0.3;
-                    let eye1Y = y + cellSize * 0.4;
-                    let eye2X = x + cellSize * 0.7;
-                    let eye2Y = y + cellSize * 0.4;
-                    
-                    ctx.beginPath();
-                    ctx.arc(eye1X, eye1Y, eyeSize, 0, Math.PI * 2);
-                    ctx.arc(eye2X, eye2Y, eyeSize, 0, Math.PI * 2);
-                    ctx.fill();
-                } else {
-                    ctx.fillStyle = skin.body;
-                    ctx.beginPath();
-                    ctx.roundRect(x + 3, y + 3, cellSize - 6, cellSize - 6, 10);
-                    ctx.fill();
+                    if (config.customSkin.enabled && config.customSkin.headLoaded && config.customSkin.headImg && config.customSkin.headImg.complete) {
+                        ctx.save();
+                        ctx.shadowBlur = 0;
+                        ctx.strokeStyle = "transparent";
+                        ctx.fillStyle = "transparent";
+                        ctx.beginPath();
+                        ctx.roundRect(x + 2, y + 2, cellSize - 4, cellSize - 4, 8);
+                        ctx.clip();
+                        ctx.drawImage(
+                            config.customSkin.headImg, 
+                            0, 0, config.customSkin.headImg.width, config.customSkin.headImg.height,
+                            x + 2, y + 2, cellSize - 4, cellSize - 4
+                        );
+                        ctx.restore();
+                        ctx.shadowBlur = 5;
+                        ctx.shadowColor = "rgba(0,0,0,0.2)";
+                    } else {
+                        ctx.fillStyle = skin.head;
+                        ctx.shadowBlur = 10;
+                        ctx.shadowColor = skin.head;
+                        ctx.beginPath();
+                        ctx.roundRect(x + 2, y + 2, cellSize - 4, cellSize - 4, 8);
+                        ctx.fill();
+                        ctx.fillStyle = skin.eye;
+                        const eyeSize = cellSize / 6;
+                        let eye1X = x + cellSize * 0.3;
+                        let eye1Y = y + cellSize * 0.4;
+                        let eye2X = x + cellSize * 0.7;
+                        let eye2Y = y + cellSize * 0.4;
+                        ctx.beginPath();
+                        ctx.arc(eye1X, eye1Y, eyeSize, 0, Math.PI * 2);
+                        ctx.arc(eye2X, eye2Y, eyeSize, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                } 
+                // 蛇尾
+                else if (index === snake.length - 1) {
+                    if (config.customSkin.enabled && config.customSkin.tailLoaded && config.customSkin.tailImg && config.customSkin.tailImg.complete) {
+                        ctx.save();
+                        ctx.shadowBlur = 0;
+                        ctx.strokeStyle = "transparent";
+                        ctx.fillStyle = "transparent";
+                        ctx.beginPath();
+                        ctx.roundRect(x + 3, y + 3, cellSize - 6, cellSize - 6, 6);
+                        ctx.clip();
+                        ctx.drawImage(
+                            config.customSkin.tailImg, 
+                            0, 0, config.customSkin.tailImg.width, config.customSkin.tailImg.height,
+                            x + 3, y + 3, cellSize - 6, cellSize - 6
+                        );
+                        ctx.restore();
+                    } else {
+                        ctx.fillStyle = skin.body;
+                        ctx.shadowBlur = 0;
+                        ctx.beginPath();
+                        ctx.roundRect(x + 3, y + 3, cellSize - 6, cellSize - 6, 6);
+                        ctx.fill();
+                    }
+                }
+                // 蛇身
+                else {
+                    if (config.customSkin.enabled && config.customSkin.bodyLoaded && config.customSkin.bodyImg && config.customSkin.bodyImg.complete) {
+                        ctx.save();
+                        ctx.shadowBlur = 0;
+                        ctx.strokeStyle = "transparent";
+                        ctx.fillStyle = "transparent";
+                        ctx.beginPath();
+                        ctx.roundRect(x + 3, y + 3, cellSize - 6, cellSize - 6, 4);
+                        ctx.clip();
+                        ctx.drawImage(
+                            config.customSkin.bodyImg, 
+                            0, 0, config.customSkin.bodyImg.width, config.customSkin.bodyImg.height,
+                            x + 3, y + 3, cellSize - 6, cellSize - 6
+                        );
+                        ctx.restore();
+                    } else {
+                        ctx.fillStyle = skin.body;
+                        ctx.shadowBlur = 0;
+                        ctx.beginPath();
+                        ctx.roundRect(x + 3, y + 3, cellSize - 6, cellSize - 6, 4);
+                        ctx.fill();
+                    }
                 }
             });
-            
             // 绘制食物
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = "#e74c3c";
             ctx.fillStyle = "#e74c3c";
             ctx.beginPath();
-            ctx.roundRect(
-                food.x * cellSize + 4,
-                food.y * cellSize + 4,
-                cellSize - 8,
-                cellSize - 8,
-                10
-            );
+            ctx.arc(food.x * cellSize + cellSize/2, food.y * cellSize + cellSize/2, cellSize/3, 0, Math.PI*2);
             ctx.fill();
-            
+            ctx.shadowBlur = 0;
             ctx.fillStyle = "#fff";
             ctx.font = (cellSize * 0.6) + "px Arial";
             ctx.textAlign = "center";
             ctx.fillText("🍎", food.x * cellSize + cellSize/2, food.y * cellSize + cellSize/2 + cellSize/6);
         }
-
-        // ========== 圆盘操控 - 优化灵敏度 ==========
-        function initJoystick() {
-            const joystick = document.getElementById("joystick");
-            let isDragging = false;
-            const joystickPanel = dom.joystickPanel;
-            
-            joystick.addEventListener("mousedown", startDrag);
-            joystick.addEventListener("touchstart", (e) => {
-                e.preventDefault();
-                startDrag(e.touches[0]);
-            });
-            
-            document.addEventListener("mousemove", drag);
-            document.addEventListener("touchmove", (e) => {
-                e.preventDefault();
-                drag(e.touches[0]);
-            });
-            
-            document.addEventListener("mouseup", endDrag);
-            document.addEventListener("touchend", endDrag);
-            
-            function startDrag(e) {
-                isDragging = true;
-            }
-            
-            function drag(e) {
-                if (!isDragging || isPaused) return;
-                
-                const rect = joystickPanel.getBoundingClientRect();
-                const centerX = rect.left + rect.width / 2;
-                const centerY = rect.top + rect.height / 2;
-                
-                const touchX = e.clientX || e.pageX;
-                const touchY = e.clientY || e.pageY;
-                
-                const deltaX = touchX - centerX;
-                const deltaY = touchY - centerY;
-                
-                // 优化：减小死区，提升灵敏度
-                if (Math.abs(deltaX) > config.joystickDeadZone || Math.abs(deltaY) > config.joystickDeadZone) {
-                    if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                        dx = deltaX > 0 ? 1 : -1;
-                        dy = 0;
-                    } else {
-                        dy = deltaY > 0 ? 1 : -1;
-                        dx = 0;
-                    }
-                }
-                
-                // 优化：更流畅的圆盘移动
-                const maxDist = 30;
-                const dist = Math.min(Math.sqrt(deltaX*deltaX + deltaY*deltaY), maxDist);
-                const radian = Math.atan2(deltaY, deltaX);
-                
-                const knobX = Math.cos(radian) * dist;
-                const knobY = Math.sin(radian) * dist;
-                
-                joystick.style.transform = `translate(${knobX - 25}px, ${knobY - 25}px)`;
-            }
-            
-            function endDrag() {
-                isDragging = false;
-                joystick.style.transform = "translate(-50%, -50%)";
-            }
-        }
-
-        // ========== 其他辅助函数 ==========
+        
         function generateFood() {
             food = {
                 x: Math.floor(Math.random() * config.gridSize),
                 y: Math.floor(Math.random() * config.gridSize)
             };
-            
             if (snake.some(s => s.x === food.x && s.y === food.y)) {
                 generateFood();
             }
         }
-
+        
         function handleKeydown(e) {
-            if (isPaused) return;
-            
-            switch (e.key) {
-                case "ArrowUp": if (dy !== 1) { dx = 0; dy = -1; } break;
-                case "ArrowDown": if (dy !== -1) { dx = 0; dy = 1; } break;
-                case "ArrowLeft": if (dx !== 1) { dx = -1; dy = 0; } break;
-                case "ArrowRight": if (dx !== -1) { dx = 1; dy = 0; } break;
-                case " ": togglePause(); break;
+            if (isPaused || isGameOver) return;
+            switch(e.key) {
+                case "ArrowUp":
+                    if (dy !== 1) {
+                        dx = 0;
+                        dy = -1;
+                    }
+                    break;
+                case "ArrowDown":
+                    if (dy !== -1) {
+                        dx = 0;
+                        dy = 1;
+                    }
+                    break;
+                case "ArrowLeft":
+                    if (dx !== 1) {
+                        dx = -1;
+                        dy = 0;
+                    }
+                    break;
+                case "ArrowRight":
+                    if (dx !== -1) {
+                        dx = 1;
+                        dy = 0;
+                    }
+                    break;
             }
         }
-
+        
+        function findShortestPath() { 
+            const dxFood = food.x - head.x;
+            const dyFood = food.y - head.y;
+            if (Math.abs(dxFood) > Math.abs(dyFood)) {
+                if (dxFood > 0 && dx !== -1) {
+                    return {x: 1, y: 0};
+                } else if (dxFood < 0 && dx !== 1) {
+                    return {x: -1, y: 0};
+                }
+            }
+            if (dyFood > 0 && dy !== -1) {
+                return {x: 0, y: 1};
+            } else if (dyFood < 0 && dy !== 1) {
+                return {x: 0, y: -1};
+            }
+            return null;
+        }
+        
         function togglePause() {
             isPaused = !isPaused;
-            document.getElementById("pause-panel").style.display = isPaused ? "flex" : "none";
+            if (isPaused) {
+                dom.pausePanel.style.display = "flex";
+            } else {
+                dom.pausePanel.style.display = "none";
+            }
         }
-
+        
         function gameOver() {
             clearInterval(gameLoop);
+            isGameOver = true;
             playSound("hitSound");
-            
-            document.getElementById("final-score").innerText = score;
-            saveHighestScore();
-            saveToRank();
-            
-            document.getElementById("over-panel").style.display = "flex";
-        }
-
-        function restartGame() {
-            document.getElementById("over-panel").style.display = "none";
-            initGameData();
-            gameLoop = setInterval(updateGame, config.speed);
-            isPaused = false;
-        }
-
-        function backToHome() {
-            clearInterval(gameLoop);
-            dom.gameContainer.style.display = "none";
-            dom.gameHome.style.display = "flex";
-            isPaused = false;
-        }
-
-        function playSound(soundName) {
-            if (!config.soundOn) return;
-            const sound = dom.audio[soundName];
-            if (sound) {
-                sound.currentTime = 0;
-                sound.play().catch(e => console.log("音效播放失败:", e));
-            }
-        }
-
-        function playBgMusic() {
-            if (config.musicOn) {
-                dom.audio.bgMusic.volume = 0.3;
-                dom.audio.bgMusic.play().catch(e => console.log("背景音乐播放失败:", e));
-            }
-        }
-
-        function toggleMusic() {
-            config.musicOn = !config.musicOn;
-            const btn = document.getElementById("music-btn");
-            btn.innerHTML = config.musicOn ? "🎵" : "🔇";
-            
-            if (config.musicOn) dom.audio.bgMusic.play();
-            else dom.audio.bgMusic.pause();
-        }
-
-        function toggleSound() {
-            config.soundOn = !config.soundOn;
-            const btn = document.getElementById("sound-btn");
-            btn.innerHTML = config.soundOn ? "🔊" : "🔇";
-        }
-
-        function loadHighestScore() {
-            highest = localStorage.getItem("snakeHighest") || 0;
-            document.getElementById("highest").innerText = highest;
-        }
-
-        function saveHighestScore() {
+            if(navigator.vibrate) navigator.vibrate(200);
             if (score > highest) {
                 highest = score;
                 localStorage.setItem("snakeHighest", highest);
-                document.getElementById("highest").innerText = highest;
             }
+            saveRankData();
+            showSummary();
+            dom.overPanel.style.display = "flex";
         }
-
-        function loadRankData() {
-            const rankStr = localStorage.getItem("snakeRank");
-            rankData = rankStr ? JSON.parse(rankStr) : [];
-            rankData.sort((a, b) => b.score - a.score);
-            if (rankData.length > 10) rankData = rankData.slice(0, 10);
+        
+        function showSummary() {
+            document.getElementById("res-steps").innerText = moveRoute.length;
+            document.getElementById("res-apples").innerText = appleCount;
+            let difficulty = "简单";
+            if (config.speed === 150) difficulty = "中等";
+            if (config.speed === 120) difficulty = "困难";
+            document.getElementById("res-difficulty").innerText = difficulty;
+            drawRouteSummary();
+            let title = "[ 丛林萌蛇 ]";
+            if (score >= 100) title = "[ 草原灵蛇 ]";
+            if (score >= 200) title = "[ 峡谷猛蛇 ]";
+            if (score >= 500) title = "[ 沙漠巨蟒 ]";
+            if (score >= 1000) title = "[ 神龙降世 ]";
+            document.getElementById("achievement-title").innerText = title;
         }
-
-        function saveToRank() {
-            if (score <= 0) return;
-            
+        
+        function drawRouteSummary() {
+            const sCanvas = document.getElementById("route-summary-map");
+            const sCtx = sCanvas.getContext("2d");
+            sCtx.clearRect(0, 0, sCanvas.width, sCanvas.height);
+            sCtx.fillStyle = "#fef9ef";
+            sCtx.fillRect(0, 0, sCanvas.width, sCanvas.height);
+            const cellSize = Math.min(sCanvas.width / config.gridSize, sCanvas.height / config.gridSize);
+            moveRoute.forEach((pos, index) => {
+                const x = pos.x * cellSize;
+                const y = pos.y * cellSize;
+                sCtx.fillStyle = index === 0 ? "#e74c3c" : "#f39c12";
+                if (pos.isApple) {
+                    sCtx.fillStyle = "#2ecc71";
+                }
+                sCtx.fillRect(x, y, cellSize - 1, cellSize - 1);
+            });
+        }
+        
+        function saveAsImage() {
+            const canvas = document.getElementById("route-summary-map");
+            const dataURL = canvas.toDataURL("image/png");
+            const link = document.createElement("a");
+            link.download = `贪吃蛇战绩_${score}分_${new Date().toLocaleDateString()}.png`;
+            link.href = dataURL;
+            link.click();
+        }
+        
+        function loadHighestScore() {
+            highest = parseInt(localStorage.getItem("snakeHighest")) || 0;
+            document.getElementById("high-score").innerText = highest;
+        }
+        
+        function saveRankData() {
             const now = new Date();
             const record = {
                 score: score,
-                date: `${now.getMonth()+1}月${now.getDate()}日 ${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`
+                date: now.toLocaleString(),
+                timestamp: now.getTime()
             };
-            
             rankData.push(record);
             rankData.sort((a, b) => b.score - a.score);
-            if (rankData.length > 10) rankData = rankData.slice(0, 10);
-            
+            rankData = rankData.slice(0, 10);
             localStorage.setItem("snakeRank", JSON.stringify(rankData));
         }
-
-        function showRank() {
-            loadRankData();
-            const rankList = document.getElementById("rank-list");
-            rankList.innerHTML = "";
-            
-            if (rankData.length === 0) {
-                rankList.innerHTML = '<div class="rank-item" style="justify-content:center;">暂无记录</div>';
-            } else {
-                rankData.forEach((item, index) => {
-                    const rankItem = document.createElement("div");
-                    rankItem.className = "rank-item";
-                    
-                    let rankNum = index + 1;
-                    if (rankNum === 1) rankNum = "🥇";
-                    else if (rankNum === 2) rankNum = "🥈";
-                    else if (rankNum === 3) rankNum = "🥉";
-                    
-                    rankItem.innerHTML = `
-                        <span class="rank-num">${rankNum}</span>
-                        <span class="rank-score">${item.score} 分</span>
-                        <span class="rank-date">${item.date}</span>
-                    `;
-                    
-                    rankList.appendChild(rankItem);
-                });
+        
+        function loadRankData() {
+            const saved = localStorage.getItem("snakeRank");
+            if (saved) {
+                rankData = JSON.parse(saved);
             }
-            
-            document.getElementById("rank-modal").style.display = "flex";
         }
-
-        function closeRank() {
-            document.getElementById("rank-modal").style.display = "none";
+        
+        function renderRank() {
+            const list = document.getElementById("rank-list");
+            list.innerHTML = "";
+            if (rankData.length === 0) {
+                list.innerHTML = '<div class="rank-item"><span style="color:#7f8c8d;">暂无游戏记录</span></div>';
+                return;
+            }
+            rankData.forEach((item, index) => {
+                const el = document.createElement("div");
+                el.className = "rank-item";
+                el.innerHTML = `
+                    <span class="rank-num">${index + 1}</span>
+                    <span class="rank-score">${item.score} 分</span>
+                    <span class="rank-date">${item.date}</span>
+                `;
+                list.appendChild(el);
+            });
         }
-
-        function closeGuide() {
-            document.getElementById("guide-page").style.display = "none";
+        
+        function restartGame() {
+            startGame();
+        }
+        
+        function backToHome() {
+            clearInterval(gameLoop);
+            dom.gameHome.style.display = "flex";
+            dom.gameHeader.style.display = "none";
+            dom.gameWrapper.style.display = "none";
+            dom.joystickArea.style.display = "none";
         }
     </script>
 </body>
