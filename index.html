@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>我是贪吃蛇 🐍 2026马年新春限定版</title>
     <style>
         :root { 
@@ -164,7 +165,7 @@
             color: #2c3e50;
             margin-bottom: 10px;
         }
-        /* 难度/操控选择 - 修复为图2样式 */
+        /* 难度/操控选择 */
         .mode-options {
             display: flex;
             justify-content: center;
@@ -183,7 +184,6 @@
             cursor: pointer;
             transition: all 0.2s ease;
         }
-        /* 选中状态 - 图2橙色样式 */
         .mode-btn.active {
             background: var(--orange);
             color: white;
@@ -233,7 +233,7 @@
             top: 0;
             left: 0;
         }
-        /* 自定义皮肤弹窗 - 适配三个部分 */
+        /* 自定义皮肤弹窗 */
         #custom-skin-modal {
             position: fixed;
             top: 50%;
@@ -247,7 +247,7 @@
             z-index: 1001;
             display: none;
             width: 90%;
-            max-width: 450px; /* 加宽适配三个预览 */
+            max-width: 450px;
         }
         .modal-title {
             font-size: 22px;
@@ -279,7 +279,7 @@
             text-align: center;
             margin-top: 5px;
         }
-        /* 预览容器 - 改为横向三列 */
+        /* 预览容器 */
         .preview-container {
             display: flex;
             gap: 15px;
@@ -321,7 +321,7 @@
             gap: 10px;
             margin-top: 20px;
         }
-        /* 顶部信息栏（修复重叠） */
+        /* 顶部信息栏 */
         .header { 
             width: 95%; 
             max-width: 420px; 
@@ -341,7 +341,7 @@
             font-weight: bold; 
             flex-shrink: 0;
         }
-        /* 游戏控制按钮（修复重叠） */
+        /* 游戏控制按钮 */
         .game-controls {
             display: flex;
             gap: 10px;
@@ -390,6 +390,7 @@
             display: block; 
             border-radius: 12px; 
             background: #fffcf5; 
+            touch-action: none; /* 关键：禁用canvas默认触摸行为 */
         }
         /* 总结面板优化 */
         .overlay {
@@ -483,37 +484,6 @@
             color: var(--orange);
             margin-bottom: 20px;
         }
-        /* 跟随手指的摇杆样式 */
-        #joystick-area {
-            margin: 20px auto; 
-            width: 140px; 
-            height: 140px; 
-            background: radial-gradient(circle at center, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.6) 70%, rgba(243, 156, 18, 0.2) 100%);
-            border-radius: 50%; 
-            position: relative; 
-            border: 2px solid rgba(243, 156, 18, 0.3);
-            display: none;
-            touch-action: none; 
-            z-index: 50;
-            -webkit-user-select: none;
-            user-select: none;
-            cursor: pointer;
-        }
-        #knob {
-            width: 55px; 
-            height: 55px; 
-            background: var(--gold); 
-            border-radius: 50%;
-            position: absolute; 
-            left: 42.5px; 
-            top: 42.5px; 
-            box-shadow: 0 0 0 4px rgba(243, 156, 18, 0.3), 0 5px 15px rgba(0,0,0,0.2);
-            transition: transform 0.05s ease-out;
-            touch-action: none;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-            border: 3px solid rgba(255, 255, 255, 0.8);
-        }
         /* 排行榜弹窗 */
         #rank-modal {
             position: fixed;
@@ -586,6 +556,81 @@
             z-index: 9999;
             display: none;
         }
+        
+        /* 滑动操控圆盘样式 - 优化版 */
+        #joystick-container {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 200px;
+            display: none;
+            z-index: 90;
+            pointer-events: auto;
+        }
+        
+        /* 操控盘背景 - 优化版 */
+        .joystick-bg {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            border: 3px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            touch-action: none;
+            pointer-events: auto;
+        }
+        
+        /* 操控盘摇杆 - 优化版（跟随手指移动） */
+        .joystick-knob {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--gold);
+            position: absolute;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.05s ease-out; /* 顺滑跟随 */
+            touch-action: none;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+        
+        /* 方向指示 */
+        .joystick-direction {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+        
+        .direction-btn {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--gold);
+        }
+        
+        .up { top: 10px; }
+        .down { bottom: 10px; }
+        .left { left: 10px; }
+        .right { right: 10px; }
+        
         /* 电脑端优化 */
         @media (min-width: 768px) {
             body {
@@ -642,16 +687,16 @@
                 font-size: 14px;
                 padding: 5px 10px;
             }
-            /* 移动端摇杆优化 */
-            #joystick-area {
-                width: 120px;
-                height: 120px;
+            
+            /* 移动端操控盘适配 */
+            #joystick-container {
+                width: 180px;
+                height: 180px;
+                bottom: 20px;
             }
-            #knob {
-                width: 50px;
-                height: 50px;
-                left: 35px;
-                top: 35px;
+            .joystick-knob {
+                width: 60px;
+                height: 60px;
             }
         }
     </style>
@@ -673,8 +718,8 @@
             
             <div class="guide-item">
                 <strong>🎮 操控方式：</strong><br>
-                • 电脑：方向键控制蛇的移动；圆盘模式可鼠标拖动操控<br>
-                • 手机：摇杆完全跟随手指移动，360°自由控制
+                • 电脑：方向键控制蛇的移动<br>
+                • 手机：滑动操控盘（摇杆跟随手指移动）控制方向
             </div>
             
             <div class="guide-item">
@@ -713,7 +758,7 @@
             <button class="btn btn-primary" onclick="closeGuide()">开始游戏</button>
         </div>
     </div>
-    <!-- 自定义皮肤弹窗 - 升级为蛇头/蛇身/蛇尾 -->
+    <!-- 自定义皮肤弹窗 -->
     <div id="custom-skin-modal">
         <h3 class="modal-title">🎨 自定义蛇皮肤</h3>
         <!-- 蛇头上传 -->
@@ -732,7 +777,7 @@
             <input type="file" id="body-upload" accept="image/*">
             <p class="upload-tip">支持JPG/PNG格式，建议60x60正方形图片（透明背景更佳）</p>
         </div>
-        <!-- 新增：蛇尾上传 -->
+        <!-- 蛇尾上传 -->
         <div class="skin-upload-group">
             <label class="upload-label" for="tail-upload">
                 🌀 点击上传蛇尾图片
@@ -740,7 +785,7 @@
             <input type="file" id="tail-upload" accept="image/*">
             <p class="upload-tip">支持JPG/PNG格式，建议60x60正方形图片（透明背景更佳）</p>
         </div>
-        <!-- 预览容器 - 三个预览 -->
+        <!-- 预览容器 -->
         <div class="preview-container">
             <div class="preview-item">
                 <div class="preview-box" id="head-preview">
@@ -766,7 +811,7 @@
             <button class="btn btn-main" onclick="confirmCustomSkin()">确认使用</button>
         </div>
     </div>
-    <!-- 首页（修复操控/难度按钮布局） -->
+    <!-- 首页 -->
     <div id="game-home">
         <h1 class="home-title">我是贪吃蛇 🐍</h1>
         <div class="year-theme">🐴 2026马年新春版 🧧</div>
@@ -777,7 +822,7 @@
             </div>
             <div class="mode-options">
                 <button class="mode-btn active" data-control="keyboard">键盘操控</button>
-                <button class="mode-btn" data-control="joystick">摇杆操控</button>
+                <button class="mode-btn" data-control="swipe">滑动操控</button>
             </div>
         </div>
         <!-- 难度选择 -->
@@ -814,7 +859,7 @@
         <div class="stat-box">得分: <span id="score">0</span></div>
         <div class="stat-box" id="combo-ui">Combo x1</div>
         <div class="stat-box">最高: <span id="high-score">0</span></div>
-        <!-- 游戏控制按钮（修复重叠） -->
+        <!-- 游戏控制按钮 -->
         <div class="game-controls">
             <button class="btn btn-sub" id="pause-btn" title="暂停游戏">⏸️</button>
             <button class="btn btn-main" id="home-btn" title="返回主页">🏠</button>
@@ -829,7 +874,7 @@
             <button class="btn btn-main" onclick="togglePause()">继续游戏</button>
             <button class="btn btn-sub" onclick="backToHome()">返回首页</button>
         </div>
-        <!-- 结束面板（新春战报） -->
+        <!-- 结束面板 -->
         <div id="over-panel" class="overlay">
             <h2 style="color: var(--red); margin-bottom: 10px;">🧧 马到成功 · 战报</h2>
             <div class="share-card">
@@ -850,10 +895,20 @@
             </div>
         </div>
     </div>
-    <!-- 跟随手指移动的摇杆 -->
-    <div id="joystick-area">
-        <div id="knob"></div>
+    
+    <!-- 滑动操控圆盘 -->
+    <div id="joystick-container">
+        <div class="joystick-bg" id="joystick-bg">
+            <div class="joystick-knob" id="joystick-knob"></div>
+            <div class="joystick-direction">
+                <div class="direction-btn up">↑</div>
+                <div class="direction-btn down">↓</div>
+                <div class="direction-btn left">←</div>
+                <div class="direction-btn right">→</div>
+            </div>
+        </div>
     </div>
+    
     <!-- 排行榜弹窗 -->
     <div id="rank-modal">
         <h2 class="panel-title">🏆 新春排行榜</h2>
@@ -884,7 +939,6 @@
             soundOn: true,
             aiEnabled: false,
             isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
-            // 自定义皮肤配置 - 升级为蛇头/蛇身/蛇尾
             customSkin: {
                 enabled: false,
                 headImg: null,      
@@ -904,20 +958,22 @@
                 gold: { head: "#f1c40f", body: "#f39c12", eye: "#000", bg: "#fff9c4" },
                 green: { head: "#2ecc71", body: "#27ae60", eye: "#fff", bg: "#e8f5e9" },
                 blue: { head: "#3498db", body: "#2980b9", eye: "#fff", bg: "#e3f2fd" }
-            }
+            },
+            dx: 0,
+            dy: -1
         };
 
-        // 新增：皮肤加载状态全局变量
+        // 皮肤加载状态全局变量
         let skinLoadState = {
             isCustomSelected: false, 
             isAllLoaded: false,      
             loadTip: ""              
         };
 
-        // 摇杆核心变量（跟随手指专用）
-        let joystickActive = false;
-        let joystickX = 0;
-        let joystickY = 0;
+        // 滑动控制核心变量
+        let touchStartX = 0;
+        let touchStartY = 0;
+        const SWIPE_THRESHOLD = 15; // 滑动触发阈值
 
         // 游戏核心变量
         let canvas, ctx;
@@ -936,13 +992,26 @@
         let moveRoute = [];
         let appleCount = 0;
         let gameStartTime = 0;
+        
+        // 滑动操控圆盘变量 - 优化版（支持跟随手指移动）
+        let joystick = {
+            isActive: false,
+            centerX: 0,
+            centerY: 0,
+            maxDistance: 70,
+            knob: null,
+            bg: null,
+            container: null,
+            startX: 0, // 触摸起始X
+            startY: 0  // 触摸起始Y
+        };
+        
         // DOM元素缓存
         const dom = {
             gameHome: document.getElementById("game-home"),
             gameHeader: document.getElementById("game-header"),
             gameWrapper: document.getElementById("game-wrapper"),
             canvas: document.getElementById("game-canvas"),
-            joystickArea: document.getElementById("joystick-area"),
             overPanel: document.getElementById("over-panel"),
             pausePanel: document.getElementById("pause-panel"),
             customSkinModal: document.getElementById("custom-skin-modal"),
@@ -958,12 +1027,17 @@
                 bgMusic: document.getElementById("bg-music"),
                 eatSound: document.getElementById("eat-sound"),
                 hitSound: document.getElementById("hit-sound")
-            }
+            },
+            // 操控盘元素
+            joystickContainer: document.getElementById("joystick-container"),
+            joystickBg: document.getElementById("joystick-bg"),
+            joystickKnob: document.getElementById("joystick-knob"),
         };
+
         // ========== 初始化 ==========
         window.onload = function() {
             if (config.isMobile) {
-                document.querySelector('[data-control="joystick"]').click();
+                document.querySelector('[data-control="swipe"]').click();
             }
             initCanvas();
             initSummaryCanvas();
@@ -973,11 +1047,28 @@
             bindCustomSkinEvents();
             bindModalCloseEvents();
             playBgMusic();
-            initJoystick(); // 初始化跟随手指的摇杆
+            initSwipeControl(); // 初始化滑动控制
             initGameData();
             drawGame();
             
-            // 新增：初始化开始游戏按钮状态
+            // 初始化滑动操控圆盘 - 优化版（核心修改）
+            initJoystick();
+            
+            // 监听操控模式切换
+            document.querySelectorAll(".mode-btn[data-control]").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const siblings = Array.from(btn.parentElement.children);
+                    siblings.forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+                    if (btn.dataset.control) config.control = btn.dataset.control;
+                    updateJoystickVisibility();
+                    updateJoystickColor();
+                    // 切换模式后重置摇杆
+                    setTimeout(resetJoystick, 100);
+                });
+            });
+            
+            // 初始化开始游戏按钮状态
             updateSkinLoadState();
             updateStartBtnState();
             
@@ -985,9 +1076,294 @@
                 if (!isGameOver) {
                     resizeCanvas();
                     drawGame();
+                    // 调整操控盘位置
+                    if (joystick.container && joystick.container.style.display === "block") {
+                        resetJoystick();
+                    }
                 }
             });
         };
+
+        // ========== 滑动操控核心逻辑 ==========
+        function initSwipeControl() {
+            const gameCanvas = document.getElementById("game-canvas");
+
+            // 触摸开始
+            gameCanvas.addEventListener("touchstart", (e) => {
+                e.preventDefault();
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+            }, { passive: false });
+
+            // 触摸移动（核心：判断滑动方向）
+            gameCanvas.addEventListener("touchmove", (e) => {
+                e.preventDefault();
+                const touchX = e.touches[0].clientX;
+                const touchY = e.touches[0].clientY;
+
+                const deltaX = touchX - touchStartX;
+                const deltaY = touchY - touchStartY;
+
+                // 判断滑动方向
+                if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                    // 水平滑动
+                    if (deltaX > SWIPE_THRESHOLD && dx !== -1) {
+                        dx = 1;
+                        dy = 0;
+                        touchStartX = touchX; // 重置起点，避免连续触发
+                    } else if (deltaX < -SWIPE_THRESHOLD && dx !== 1) {
+                        dx = -1;
+                        dy = 0;
+                        touchStartX = touchX;
+                    }
+                } else {
+                    // 垂直滑动
+                    if (deltaY > SWIPE_THRESHOLD && dy !== -1) {
+                        dx = 0;
+                        dy = 1;
+                        touchStartY = touchY;
+                    } else if (deltaY < -SWIPE_THRESHOLD && dy !== 1) {
+                        dx = 0;
+                        dy = -1;
+                        touchStartY = touchY;
+                    }
+                }
+            }, { passive: false });
+
+            // 触摸结束
+            gameCanvas.addEventListener("touchend", (e) => {
+                e.preventDefault();
+            }, { passive: false });
+
+            // 防止触摸被浏览器拦截
+            gameCanvas.addEventListener("touchcancel", (e) => {
+                e.preventDefault();
+            }, { passive: false });
+        }
+
+        // ========== 滑动操控圆盘核心逻辑（优化版 - 支持跟随手指移动） ==========
+        function initJoystick() {
+            // 确保DOM元素加载完成
+            if (!dom.joystickContainer || !dom.joystickBg || !dom.joystickKnob) {
+                setTimeout(initJoystick, 100);
+                return;
+            }
+            
+            joystick.container = dom.joystickContainer;
+            joystick.bg = dom.joystickBg;
+            joystick.knob = dom.joystickKnob;
+            
+            // 初始化位置
+            resetJoystick();
+            
+            // 绑定触摸事件（优化版：支持跟随手指移动）
+            bindJoystickEventsOptimized();
+            
+            // 初始更新显示状态和颜色
+            updateJoystickVisibility();
+            updateJoystickColor();
+        }
+
+        // 重置摇杆位置（优化版）
+        function resetJoystick() {
+            if (!joystick.bg || !joystick.knob) return;
+            
+            // 获取背景中心位置
+            const rect = joystick.bg.getBoundingClientRect();
+            joystick.centerX = rect.left + rect.width / 2;
+            joystick.centerY = rect.top + rect.height / 2;
+            joystick.maxDistance = Math.min(rect.width, rect.height) / 2 - 35;
+            
+            // 重置摇杆到中心
+            joystick.knob.style.transform = `translate(-50%, -50%)`;
+            joystick.isActive = false;
+        }
+
+        // 更新操控盘显示/隐藏（优化版）
+        function updateJoystickVisibility() {
+            if (config.control === "swipe" && dom.gameWrapper.style.display === "block") {
+                dom.joystickContainer.style.display = "block";
+                // 确保canvas滑动事件和摇杆事件不冲突
+                dom.canvas.style.touchAction = "none";
+                setTimeout(resetJoystick, 50); // 延迟重置确保DOM已渲染
+            } else {
+                dom.joystickContainer.style.display = "none";
+            }
+        }
+
+        // 更新操控盘颜色（随皮肤变化）
+        function updateJoystickColor() {
+            if (!joystick.bg || !joystick.knob) return;
+            
+            let skinColor = config.colors[config.skin];
+            if (config.skin === "custom" && config.customSkin.enabled) {
+                // 自定义皮肤时使用默认金色
+                skinColor = { head: "#f39c12", body: "#f39c12" };
+            }
+            
+            // 更新CSS变量
+            document.documentElement.style.setProperty('--gold', skinColor.head);
+            
+            // 更新操控盘样式
+            joystick.bg.style.borderColor = skinColor.head;
+            joystick.knob.style.background = skinColor.head;
+            
+            // 更新方向按钮颜色
+            const directionBtns = document.querySelectorAll('.direction-btn');
+            directionBtns.forEach(btn => {
+                btn.style.color = skinColor.head;
+            });
+        }
+
+        // 绑定摇杆触摸事件（优化版 - 核心：跟随手指移动）
+        function bindJoystickEventsOptimized() {
+            const knob = joystick.knob;
+            const bg = joystick.bg;
+            
+            // 触摸开始
+            bg.addEventListener("touchstart", (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // 激活摇杆
+                joystick.isActive = true;
+                
+                // 记录触摸起始位置
+                const touch = e.touches[0];
+                joystick.startX = touch.clientX;
+                joystick.startY = touch.clientY;
+                
+                // 重新计算背景中心（防止页面滚动导致位置偏移）
+                const rect = bg.getBoundingClientRect();
+                joystick.centerX = rect.left + rect.width / 2;
+                joystick.centerY = rect.top + rect.height / 2;
+                
+            }, { passive: false });
+            
+            // 触摸移动（核心：跟随手指移动）
+            document.addEventListener("touchmove", (e) => {
+                if (!joystick.isActive || isGameOver || isPaused) return;
+                
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const touch = e.touches[0];
+                const touchX = touch.clientX;
+                const touchY = touch.clientY;
+                
+                // 计算手指相对于背景中心的偏移量
+                const deltaX = touchX - joystick.centerX;
+                const deltaY = touchY - joystick.centerY;
+                
+                // 计算偏移距离和角度
+                const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                const angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
+                
+                // 限制最大移动距离（避免超出背景）
+                let finalX = deltaX;
+                let finalY = deltaY;
+                
+                if (distance > joystick.maxDistance) {
+                    // 按比例缩小偏移量，保持方向不变
+                    finalX = (deltaX / distance) * joystick.maxDistance;
+                    finalY = (deltaY / distance) * joystick.maxDistance;
+                }
+                
+                // 实时更新摇杆位置（核心：跟随手指移动）
+                knob.style.transform = `translate(-50%, -50%) translate(${finalX}px, ${finalY}px)`;
+                
+                // 根据角度设置蛇的移动方向
+                setDirectionByAngleOptimized(angle);
+                
+            }, { passive: false });
+            
+            // 触摸结束/取消：重置摇杆
+            ["touchend", "touchcancel"].forEach(eventType => {
+                document.addEventListener(eventType, (e) => {
+                    if (joystick.isActive) {
+                        e.preventDefault();
+                        joystick.isActive = false;
+                        // 平滑重置到中心
+                        knob.style.transform = `translate(-50%, -50%)`;
+                    }
+                }, { passive: false });
+            });
+            
+            // PC端鼠标支持（测试用）
+            bg.addEventListener("mousedown", (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                joystick.isActive = true;
+                const rect = bg.getBoundingClientRect();
+                joystick.centerX = rect.left + rect.width / 2;
+                joystick.centerY = rect.top + rect.height / 2;
+            });
+            
+            document.addEventListener("mousemove", (e) => {
+                if (!joystick.isActive || isGameOver || isPaused) return;
+                
+                e.preventDefault();
+                const mouseX = e.clientX;
+                const mouseY = e.clientY;
+                
+                const deltaX = mouseX - joystick.centerX;
+                const deltaY = mouseY - joystick.centerY;
+                const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                const angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
+                
+                let finalX = deltaX;
+                let finalY = deltaY;
+                
+                if (distance > joystick.maxDistance) {
+                    finalX = (deltaX / distance) * joystick.maxDistance;
+                    finalY = (deltaY / distance) * joystick.maxDistance;
+                }
+                
+                knob.style.transform = `translate(-50%, -50%) translate(${finalX}px, ${finalY}px)`;
+                setDirectionByAngleOptimized(angle);
+            });
+            
+            document.addEventListener("mouseup", () => {
+                if (joystick.isActive) {
+                    joystick.isActive = false;
+                    knob.style.transform = `translate(-50%, -50%)`;
+                }
+            });
+        }
+
+        // 根据角度设置蛇的移动方向（优化版）
+        function setDirectionByAngleOptimized(angle) {
+            let newDx = dx;
+            let newDy = dy;
+            
+            // 角度映射：适配屏幕坐标系
+            if (angle >= -135 && angle <= -45) {
+                // 上
+                newDx = 0;
+                newDy = -1;
+            } else if (angle >= 45 && angle <= 135) {
+                // 下
+                newDx = 0;
+                newDy = 1;
+            } else if ((angle > 135 && angle < 225) || (angle < -135 && angle > -225)) {
+                // 左
+                newDx = -1;
+                newDy = 0;
+            } else if ((angle > -45 && angle < 45)) {
+                // 右
+                newDx = 1;
+                newDy = 0;
+            }
+            
+            // 防止180度掉头
+            if (!(dx === -newDx && dy === -newDy)) {
+                dx = newDx;
+                dy = newDy;
+                config.dx = dx;
+                config.dy = dy;
+            }
+        }
+
         // ========== 弹窗关闭事件绑定 ==========
         function bindModalCloseEvents() {
             dom.mask.addEventListener("click", function() {
@@ -1008,23 +1384,27 @@
                 }
             });
         }
+
         // ========== Canvas初始化 ==========
         function initCanvas() {
             canvas = dom.canvas;
             ctx = canvas.getContext("2d");
             resizeCanvas();
         }
+
         function initSummaryCanvas() {
             const sCanvas = document.getElementById("route-summary-map");
             sCanvas.width = 240;
             sCanvas.height = 160;
         }
+
         function resizeCanvas() {
             const wrapper = document.getElementById("game-wrapper");
             const size = Math.min(wrapper.clientWidth - 20, 400);
             canvas.width = size;
             canvas.height = size;
         }
+
         // ========== 事件绑定 ==========
         function bindAllEvents() {
             document.getElementById("ai-toggle").addEventListener("click", toggleAI);
@@ -1049,6 +1429,7 @@
                     document.querySelectorAll(".skin-btn").forEach(b => b.classList.remove("active"));
                     btn.classList.add("active");
                     config.skin = btn.dataset.skin;
+                    updateJoystickColor(); // 更新操控盘颜色
                     if (!isGameOver) drawGame();
                 });
             });
@@ -1061,8 +1442,23 @@
             });
             document.getElementById("pause-btn").addEventListener("click", togglePause);
             document.getElementById("home-btn").addEventListener("click", backToHome);
+            
+            // 监听操控模式切换 - 优化版
+            document.querySelectorAll(".mode-btn[data-control]").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const siblings = Array.from(btn.parentElement.children);
+                    siblings.forEach(b => b.classList.remove("active"));
+                    btn.classList.add("active");
+                    if (btn.dataset.control) config.control = btn.dataset.control;
+                    updateJoystickVisibility();
+                    updateJoystickColor();
+                    // 切换模式后重置摇杆
+                    setTimeout(resetJoystick, 100);
+                });
+            });
         }
-        // ========== 自定义皮肤事件（升级为蛇头/蛇身/蛇尾） ==========
+
+        // ========== 自定义皮肤事件 ==========
         function bindCustomSkinEvents() {
             dom.customSkinBtn.addEventListener("click", () => {
                 dom.mask.style.display = "block";
@@ -1195,6 +1591,7 @@
                 }
             });
         }
+
         // ========== 皮肤加载状态管理 ==========
         function updateSkinLoadState() {
             skinLoadState.isCustomSelected = dom.customSkinBtn.classList.contains("active");
@@ -1225,27 +1622,22 @@
             }
         }
 
-        document.querySelectorAll(".skin-btn").forEach(btn => {
-            btn.addEventListener("click", () => {
-                setTimeout(() => {
-                    updateSkinLoadState();
-                    updateStartBtnState();
-                }, 100);
-            });
-        });
         // ========== 弹窗控制函数 ==========
         function closeGuide() {
             document.getElementById("guide-page").style.display = "none";
         }
+
         function showRank() {
             dom.mask.style.display = "block";
             dom.rankModal.style.display = "flex";
             renderRank();
         }
+
         function closeRank() {
             dom.rankModal.style.display = "none";
             dom.mask.style.display = "none";
         }
+
         function cancelCustomSkin() {
             dom.mask.style.display = "none";
             dom.customSkinModal.style.display = "none";
@@ -1256,6 +1648,7 @@
             dom.bodyPreview.innerHTML = "<span>蛇身预览</span>";
             dom.tailPreview.innerHTML = "<span>蛇尾预览</span>";
         }
+
         function confirmCustomSkin() {
             if (!config.customSkin.headLoaded || !config.customSkin.bodyLoaded || !config.customSkin.tailLoaded) {
                 alert("请上传并等待所有图片（蛇头、蛇身、蛇尾）加载完成！");
@@ -1268,6 +1661,7 @@
             dom.customSkinBtn.classList.add("active");
             skinLoadState.isCustomSelected = true;
             skinLoadState.isAllLoaded = true;
+            updateJoystickColor(); // 更新操控盘颜色
             updateStartBtnState();
             cancelCustomSkin();
             if (dom.gameWrapper.style.display === "block" && !isGameOver) {
@@ -1277,6 +1671,7 @@
                 drawGame();
             }
         }
+
         // ========== 工具函数 ==========
         function playSound(type) {
             if (!config.soundOn) return;
@@ -1286,11 +1681,19 @@
                 sound.play().catch(e => console.log("音效播放失败:", e));
             }
         }
+
         function playBgMusic() {
             if (config.musicOn) {
-                dom.audio.bgMusic.play().catch(e => console.log("背景音乐播放失败:", e));
+                dom.audio.bgMusic.play().catch(e => {
+                    console.log("背景音乐播放失败，已自动关闭音乐:", e);
+                    config.musicOn = false;
+                    const musicBtn = document.getElementById("music-btn");
+                    musicBtn.style.background = "#e74c3c";
+                    musicBtn.style.color = "white";
+                });
             }
         }
+
         function toggleMusic() {
             config.musicOn = !config.musicOn;
             const btn = document.getElementById("music-btn");
@@ -1304,6 +1707,7 @@
                 btn.style.color = "white";
             }
         }
+
         function toggleSound() {
             config.soundOn = !config.soundOn;
             const btn = document.getElementById("sound-btn");
@@ -1315,6 +1719,7 @@
                 btn.style.color = "#f39c12";
             }
         }
+
         function toggleAI() {
             config.aiEnabled = !config.aiEnabled;
             const btn = document.getElementById("ai-toggle");
@@ -1324,98 +1729,7 @@
                 btn.classList.remove("ai-on");
             }
         }
-        // ========== 完全跟随手指的摇杆初始化函数 ==========
-        function initJoystick() {
-            const stick = document.getElementById("joystick-area");
-            const knob = document.getElementById("knob");
 
-            const radius = stick.offsetWidth / 2;
-            const knobRadius = knob.offsetWidth / 2;
-            const maxMove = radius - knobRadius;
-
-            // 计算小球位置
-            function getKnobPosition(clientX, clientY) {
-                const rect = stick.getBoundingClientRect();
-                const centerX = rect.left + radius;
-                const centerY = rect.top + radius;
-
-                let dx = clientX - centerX;
-                let dy = clientY - centerY;
-
-                const dist = Math.sqrt(dx*dx + dy*dy);
-
-                if (dist > maxMove) {
-                    const scale = maxMove / dist;
-                    dx *= scale;
-                    dy *= scale;
-                }
-
-                return { x: dx, y: dy };
-            }
-
-            // 移动小球
-            function moveKnob(x, y) {
-                knob.style.transform = `translate(${x}px, ${y}px)`;
-            }
-
-            // 触摸开始
-            stick.addEventListener("touchstart", (e) => {
-                e.preventDefault();
-                joystickActive = true;
-                const touch = e.touches[0];
-                const pos = getKnobPosition(touch.clientX, touch.clientY);
-                moveKnob(pos.x, pos.y);
-                // 计算摇杆方向值
-                joystickX = pos.x / maxMove;
-                joystickY = pos.y / maxMove;
-            }, { passive: false });
-
-            // 触摸移动（核心：实时跟随手指）
-            document.addEventListener("touchmove", (e) => {
-                if (!joystickActive) return;
-                e.preventDefault();
-                const touch = e.touches[0];
-                const pos = getKnobPosition(touch.clientX, touch.clientY);
-                moveKnob(pos.x, pos.y);
-                // 实时更新方向值
-                joystickX = pos.x / maxMove;
-                joystickY = pos.y / maxMove;
-            }, { passive: false });
-
-            // 触摸结束
-            document.addEventListener("touchend", () => {
-                if (!joystickActive) return;
-                joystickActive = false;
-                moveKnob(0, 0); // 回到中心
-                joystickX = 0;
-                joystickY = 0;
-            });
-
-            // 鼠标支持
-            stick.addEventListener("mousedown", (e) => {
-                joystickActive = true;
-                const pos = getKnobPosition(e.clientX, e.clientY);
-                moveKnob(pos.x, pos.y);
-                joystickX = pos.x / maxMove;
-                joystickY = pos.y / maxMove;
-            });
-
-            document.addEventListener("mousemove", (e) => {
-                if (!joystickActive) return;
-                const pos = getKnobPosition(e.clientX, e.clientY);
-                moveKnob(pos.x, pos.y);
-                joystickX = pos.x / maxMove;
-                joystickY = pos.y / maxMove;
-            });
-
-            document.addEventListener("mouseup", () => {
-                if (!joystickActive) return;
-                joystickActive = false;
-                moveKnob(0, 0);
-                joystickX = 0;
-                joystickY = 0;
-            });
-        }
         // ========== 游戏核心逻辑 ==========
         function initGameData() {
             const mid = Math.floor(config.gridSize / 2);
@@ -1426,8 +1740,8 @@
             ];
             dx = 0;
             dy = -1;
-            joystickX = 0;
-            joystickY = 0;
+            config.dx = dx;
+            config.dy = dy;
             generateFood();
             score = 0;
             combo = 1;
@@ -1442,6 +1756,7 @@
             document.getElementById("high-score").innerText = highest;
             dom.overPanel.style.display = "none";
             dom.pausePanel.style.display = "none";
+            resetJoystick(); // 重置摇杆
         }
         
         function startGame() {
@@ -1454,15 +1769,9 @@
             dom.gameHeader.style.display = "flex";
             dom.gameWrapper.style.display = "block";
             
-            if (config.control === "joystick") {
-                dom.joystickArea.style.display = "block";
-                joystickX = 0;
-                joystickY = 0;
-                dx = 0;
-                dy = -1;
-            } else {
-                dom.joystickArea.style.display = "none";
-            }
+            // 更新操控盘显示和颜色
+            updateJoystickVisibility();
+            updateJoystickColor();
             
             gameStartTime = new Date().getTime();
             initGameData();
@@ -1474,33 +1783,14 @@
         
         function updateGame() {
             if (isPaused || isGameOver) return;
-
-            // ========== 摇杆方向控制（核心修复） ==========
-            if (config.control === "joystick") {
-                const deadzone = 0.2; // 死区，避免轻微触摸触发
-
-                if (Math.abs(joystickX) > Math.abs(joystickY)) {
-                    // 水平方向优先
-                    if (joystickX > deadzone && dx !== -1) {
-                        dx = 1; dy = 0;
-                    } else if (joystickX < -deadzone && dx !== 1) {
-                        dx = -1; dy = 0;
-                    }
-                } else {
-                    // 垂直方向优先
-                    if (joystickY > deadzone && dy !== -1) {
-                        dx = 0; dy = 1;
-                    } else if (joystickY < -deadzone && dy !== 1) {
-                        dx = 0; dy = -1;
-                    }
-                }
-            }
             
             if (config.aiEnabled) {
                 const aiDirection = findShortestPath();
                 if (aiDirection) {
                     dx = aiDirection.x;
                     dy = aiDirection.y;
+                    config.dx = dx;
+                    config.dy = dy;
                 }
             }
             
@@ -1511,355 +1801,506 @@
             const isSelfCollision = snake.some((seg, index) => {
                 return index > 0 && seg.x === head.x && seg.y === head.y;
             });
-            
+
+            // 碰撞检测 - 游戏结束
             if (isWallCollision || isSelfCollision) {
                 gameOver();
                 return;
             }
-            
+
+            // 添加新头部
             snake.unshift(head);
+
+            // 吃到食物的逻辑
             if (head.x === food.x && head.y === food.y) {
-                handleScore();
+                playSound('eat-sound');
                 appleCount++;
-                moveRoute[moveRoute.length-1].isApple = true;
-                playSound("eatSound");
+                score += 10 * combo;
+                comboSteps = 0;
+                
+                // 连击逻辑
+                combo++;
+                document.getElementById('combo-ui').innerText = `Combo x${combo}`;
+                
+                // 连击特效
+                const comboTip = document.getElementById('combo-tip');
+                comboTip.style.opacity = '1';
+                comboTip.style.transform = 'translate(-50%, -50%) scale(1.2)';
+                setTimeout(() => {
+                    comboTip.style.opacity = '0';
+                    comboTip.style.transform = 'translate(-50%, -50%) scale(1)';
+                }, 300);
+                
+                // 记录食物位置
+                moveRoute[moveRoute.length - 1].isApple = true;
+                
+                // 生成新食物
                 generateFood();
-                if(navigator.vibrate) navigator.vibrate(20);
             } else {
+                // 没吃到食物，移除尾部
                 snake.pop();
+                
+                // 连击重置
+                if (comboSteps > config.gridSize * 2) {
+                    combo = 1;
+                    comboSteps = 0;
+                    document.getElementById('combo-ui').innerText = 'Combo x1';
+                }
             }
+
+            // 更新分数显示
+            document.getElementById('score').innerText = score;
             
+            // 绘制游戏画面
             drawGame();
         }
-        
-        function handleScore() {
-            if(comboSteps < 10) {
-                combo++;
-                showComboEffect();
-            } else {
-                combo = 1;
-            }
-            score += (10 * combo);
-            document.getElementById("score").innerText = score;
-            document.getElementById("combo-ui").innerText = `Combo x${combo}`;
-            comboSteps = 0;
+
+        // 生成食物
+        function generateFood() {
+            let newFood;
+            do {
+                newFood = {
+                    x: Math.floor(Math.random() * config.gridSize),
+                    y: Math.floor(Math.random() * config.gridSize)
+                };
+            } while (snake.some(seg => seg.x === newFood.x && seg.y === newFood.y));
+            
+            food = newFood;
         }
-        
-        function showComboEffect() {
-            const tip = document.getElementById('combo-tip');
-            tip.style.opacity = '1';
-            tip.style.transform = 'translate(-50%, -80%) scale(1.2)';
-            setTimeout(() => { 
-                tip.style.opacity = '0'; 
-                tip.style.transform = 'translate(-50%, -50%) scale(1)'; 
-            }, 500);
-        }
-        
+
         // 绘制游戏
         function drawGame() {
+            if (!canvas) return;
+            
             const cellSize = canvas.width / config.gridSize;
-            let skin = config.colors[config.skin];
-            if (config.skin === "custom") {
-                skin = { head: "transparent", body: "transparent", tail: "transparent", eye: "#fff", bg: "#fffcf5" };
-            }
-            ctx.fillStyle = config.customSkin.enabled ? "#fffcf5" : skin.bg;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 绘制背景
+            ctx.fillStyle = config.colors[config.skin]?.bg || '#fffcf5';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            // 绘制网格
-            ctx.strokeStyle = "rgba(0,0,0,0.05)";
-            ctx.lineWidth = 1;
-            for (let i = 0; i <= config.gridSize; i++) {
-                ctx.beginPath();
-                ctx.moveTo(i * cellSize, 0);
-                ctx.lineTo(i * cellSize, canvas.height);
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.moveTo(0, i * cellSize);
-                ctx.lineTo(canvas.width, i * cellSize);
-                ctx.stroke();
-            }
+            
+            // 绘制食物
+            ctx.fillStyle = '#e74c3c';
+            ctx.beginPath();
+            ctx.arc(
+                food.x * cellSize + cellSize / 2,
+                food.y * cellSize + cellSize / 2,
+                cellSize / 2 - 2,
+                0,
+                2 * Math.PI
+            );
+            ctx.fill();
+            
             // 绘制蛇
-            snake.forEach((seg, index) => {
-                const x = seg.x * cellSize;
-                const y = seg.y * cellSize;
-                // 蛇头
+            snake.forEach((segment, index) => {
+                const x = segment.x * cellSize;
+                const y = segment.y * cellSize;
+                
                 if (index === 0) {
-                    if (config.customSkin.enabled && config.customSkin.headLoaded && config.customSkin.headImg && config.customSkin.headImg.complete) {
-                        ctx.save();
-                        ctx.shadowBlur = 0;
-                        ctx.strokeStyle = "transparent";
-                        ctx.fillStyle = "transparent";
-                        ctx.beginPath();
-                        ctx.roundRect(x + 2, y + 2, cellSize - 4, cellSize - 4, 8);
-                        ctx.clip();
+                    // 绘制蛇头
+                    if (config.skin === 'custom' && config.customSkin.enabled && config.customSkin.headImg) {
+                        // 自定义皮肤蛇头
                         ctx.drawImage(
-                            config.customSkin.headImg, 
-                            0, 0, config.customSkin.headImg.width, config.customSkin.headImg.height,
-                            x + 2, y + 2, cellSize - 4, cellSize - 4
+                            config.customSkin.headImg,
+                            x,
+                            y,
+                            cellSize,
+                            cellSize
                         );
-                        ctx.restore();
-                        ctx.shadowBlur = 5;
-                        ctx.shadowColor = "rgba(0,0,0,0.2)";
                     } else {
-                        ctx.fillStyle = skin.head;
-                        ctx.shadowBlur = 10;
-                        ctx.shadowColor = skin.head;
-                        ctx.beginPath();
-                        ctx.roundRect(x + 2, y + 2, cellSize - 4, cellSize - 4, 8);
-                        ctx.fill();
-                        ctx.fillStyle = skin.eye;
-                        const eyeSize = cellSize / 6;
-                        let eye1X = x + cellSize * 0.3;
-                        let eye1Y = y + cellSize * 0.4;
-                        let eye2X = x + cellSize * 0.7;
-                        let eye2Y = y + cellSize * 0.4;
-                        ctx.beginPath();
-                        ctx.arc(eye1X, eye1Y, eyeSize, 0, Math.PI * 2);
-                        ctx.arc(eye2X, eye2Y, eyeSize, 0, Math.PI * 2);
-                        ctx.fill();
+                        // 默认皮肤蛇头
+                        ctx.fillStyle = config.colors[config.skin].head;
+                        ctx.fillRect(x, y, cellSize, cellSize);
+                        
+                        // 绘制眼睛
+                        ctx.fillStyle = config.colors[config.skin].eye;
+                        const eyeSize = cellSize / 5;
+                        if (dx === 1) { // 右
+                            ctx.fillRect(x + cellSize - eyeSize * 2, y + eyeSize, eyeSize, eyeSize);
+                            ctx.fillRect(x + cellSize - eyeSize * 2, y + cellSize - eyeSize * 2, eyeSize, eyeSize);
+                        } else if (dx === -1) { // 左
+                            ctx.fillRect(x + eyeSize, y + eyeSize, eyeSize, eyeSize);
+                            ctx.fillRect(x + eyeSize, y + cellSize - eyeSize * 2, eyeSize, eyeSize);
+                        } else if (dy === 1) { // 下
+                            ctx.fillRect(x + eyeSize, y + cellSize - eyeSize * 2, eyeSize, eyeSize);
+                            ctx.fillRect(x + cellSize - eyeSize * 2, y + cellSize - eyeSize * 2, eyeSize, eyeSize);
+                        } else if (dy === -1) { // 上
+                            ctx.fillRect(x + eyeSize, y + eyeSize, eyeSize, eyeSize);
+                            ctx.fillRect(x + cellSize - eyeSize * 2, y + eyeSize, eyeSize, eyeSize);
+                        }
                     }
-                } 
-                // 蛇尾
-                else if (index === snake.length - 1) {
-                    if (config.customSkin.enabled && config.customSkin.tailLoaded && config.customSkin.tailImg && config.customSkin.tailImg.complete) {
-                        ctx.save();
-                        ctx.shadowBlur = 0;
-                        ctx.strokeStyle = "transparent";
-                        ctx.fillStyle = "transparent";
-                        ctx.beginPath();
-                        ctx.roundRect(x + 3, y + 3, cellSize - 6, cellSize - 6, 6);
-                        ctx.clip();
+                } else if (index === snake.length - 1) {
+                    // 绘制蛇尾
+                    if (config.skin === 'custom' && config.customSkin.enabled && config.customSkin.tailImg) {
+                        // 自定义皮肤蛇尾
                         ctx.drawImage(
-                            config.customSkin.tailImg, 
-                            0, 0, config.customSkin.tailImg.width, config.customSkin.tailImg.height,
-                            x + 3, y + 3, cellSize - 6, cellSize - 6
+                            config.customSkin.tailImg,
+                            x,
+                            y,
+                            cellSize,
+                            cellSize
                         );
-                        ctx.restore();
                     } else {
-                        ctx.fillStyle = skin.body;
-                        ctx.shadowBlur = 0;
-                        ctx.beginPath();
-                        ctx.roundRect(x + 3, y + 3, cellSize - 6, cellSize - 6, 6);
-                        ctx.fill();
+                        // 默认皮肤蛇尾
+                        ctx.fillStyle = config.colors[config.skin].body;
+                        ctx.fillRect(x, y, cellSize, cellSize);
+                        
+                        // 绘制尾部渐变
+                        ctx.fillStyle = ctx.createLinearGradient(x, y, x + cellSize, y + cellSize);
+                        ctx.fillStyle.addColorStop(0, config.colors[config.skin].body);
+                        ctx.fillStyle.addColorStop(1, config.colors[config.skin].head);
+                        ctx.fillRect(x, y, cellSize, cellSize);
+                    }
+                } else {
+                    // 绘制蛇身
+                    if (config.skin === 'custom' && config.customSkin.enabled && config.customSkin.bodyImg) {
+                        // 自定义皮肤蛇身
+                        ctx.drawImage(
+                            config.customSkin.bodyImg,
+                            x,
+                            y,
+                            cellSize,
+                            cellSize
+                        );
+                    } else {
+                        // 默认皮肤蛇身
+                        ctx.fillStyle = config.colors[config.skin].body;
+                        ctx.fillRect(x, y, cellSize, cellSize);
                     }
                 }
-                // 蛇身
-                else {
-                    if (config.customSkin.enabled && config.customSkin.bodyLoaded && config.customSkin.bodyImg && config.customSkin.bodyImg.complete) {
-                        ctx.save();
-                        ctx.shadowBlur = 0;
-                        ctx.strokeStyle = "transparent";
-                        ctx.fillStyle = "transparent";
-                        ctx.beginPath();
-                        ctx.roundRect(x + 3, y + 3, cellSize - 6, cellSize - 6, 4);
-                        ctx.clip();
-                        ctx.drawImage(
-                            config.customSkin.bodyImg, 
-                            0, 0, config.customSkin.bodyImg.width, config.customSkin.bodyImg.height,
-                            x + 3, y + 3, cellSize - 6, cellSize - 6
-                        );
-                        ctx.restore();
-                    } else {
-                        ctx.fillStyle = skin.body;
-                        ctx.shadowBlur = 0;
-                        ctx.beginPath();
-                        ctx.roundRect(x + 3, y + 3, cellSize - 6, cellSize - 6, 4);
-                        ctx.fill();
+                
+                // 绘制边框
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(x, y, cellSize, cellSize);
+            });
+        }
+
+        // AI 最短路径算法
+        function findShortestPath() {
+            const start = { x: snake[0].x, y: snake[0].y };
+            const end = { x: food.x, y: food.y };
+            
+            // BFS 算法
+            const queue = [start];
+            const visited = new Set();
+            const parent = {};
+            
+            visited.add(`${start.x},${start.y}`);
+            
+            while (queue.length > 0) {
+                const current = queue.shift();
+                
+                // 到达目标
+                if (current.x === end.x && current.y === end.y) {
+                    // 回溯找到第一步
+                    let step = current;
+                    while (parent[`${step.x},${step.y}`] && parent[`${step.x},${step.y}`] !== `${start.x},${start.y}`) {
+                        step = parent[`${step.x},${step.y}`];
                     }
+                    
+                    return {
+                        x: step.x - start.x,
+                        y: step.y - start.y
+                    };
+                }
+                
+                // 四个方向
+                const directions = [
+                    { x: 0, y: -1 }, // 上
+                    { x: 0, y: 1 },  // 下
+                    { x: -1, y: 0 }, // 左
+                    { x: 1, y: 0 }   // 右
+                ];
+                
+                for (const dir of directions) {
+                    const nextX = current.x + dir.x;
+                    const nextY = current.y + dir.y;
+                    
+                    // 检查边界和自身
+                    if (
+                        nextX >= 0 && nextX < config.gridSize &&
+                        nextY >= 0 && nextY < config.gridSize &&
+                        !snake.some(seg => seg.x === nextX && seg.y === nextY) &&
+                        !visited.has(`${nextX},${nextY}`)
+                    ) {
+                        visited.add(`${nextX},${nextY}`);
+                        parent[`${nextX},${nextY}`] = current;
+                        queue.push({ x: nextX, y: nextY });
+                    }
+                }
+            }
+            
+            // 没有找到路径，随机移动
+            const randomDirs = [
+                { x: 0, y: -1 },
+                { x: 0, y: 1 },
+                { x: -1, y: 0 },
+                { x: 1, y: 0 }
+            ].filter(dir => {
+                const nx = start.x + dir.x;
+                const ny = start.y + dir.y;
+                return nx >= 0 && nx < config.gridSize && ny >= 0 && ny < config.gridSize &&
+                       !snake.some(seg => seg.x === nx && seg.y === ny);
+            });
+            
+            return randomDirs.length > 0 ? randomDirs[0] : null;
+        }
+
+        // 游戏结束
+        function gameOver() {
+            isGameOver = true;
+            clearInterval(gameLoop);
+            playSound('hit-sound');
+            
+            // 保存最高分
+            if (score > highest) {
+                highest = score;
+                localStorage.setItem('snakeHighest', highest);
+                document.getElementById('high-score').innerText = highest;
+                
+                // 保存到排行榜
+                saveToRank();
+            }
+            
+            // 显示结束面板
+            dom.overPanel.style.display = 'flex';
+            
+            // 生成战报
+            generateSummary();
+            
+            // 隐藏操控盘
+            if (joystick.container) {
+                joystick.container.style.display = 'none';
+            }
+        }
+
+        // 生成游戏总结
+        function generateSummary() {
+            // 更新统计数据
+            document.getElementById('res-steps').innerText = moveRoute.length;
+            document.getElementById('res-apples').innerText = appleCount;
+            
+            // 更新难度显示
+            let diffText = '简单';
+            if (config.speed === 150) diffText = '中等';
+            else if (config.speed === 120) diffText = '困难';
+            document.getElementById('res-difficulty').innerText = diffText;
+            
+            // 更新成就标题
+            let achievement = '[ 丛林萌蛇 ]';
+            if (appleCount >= 5) achievement = '[ 蛇行千里 ]';
+            if (appleCount >= 10) achievement = '[ 贪食大蛇 ]';
+            if (appleCount >= 20) achievement = '[ 蛇王降临 ]';
+            document.getElementById('achievement-title').innerText = achievement;
+            
+            // 绘制路线总结
+            drawRouteSummary();
+        }
+
+        // 绘制路线总结
+        function drawRouteSummary() {
+            const sCanvas = document.getElementById('route-summary-map');
+            const sCtx = sCanvas.getContext('2d');
+            
+            // 清空画布
+            sCtx.clearRect(0, 0, sCanvas.width, sCanvas.height);
+            
+            // 绘制背景
+            sCtx.fillStyle = '#fef9ef';
+            sCtx.fillRect(0, 0, sCanvas.width, sCanvas.height);
+            
+            // 计算缩放比例
+            const scaleX = sCanvas.width / config.gridSize;
+            const scaleY = sCanvas.height / config.gridSize;
+            
+            // 绘制路线
+            moveRoute.forEach((point, index) => {
+                const x = point.x * scaleX;
+                const y = point.y * scaleY;
+                
+                if (point.isApple) {
+                    // 绘制苹果
+                    sCtx.fillStyle = '#e74c3c';
+                    sCtx.beginPath();
+                    sCtx.arc(x + scaleX/2, y + scaleY/2, scaleX/3, 0, 2 * Math.PI);
+                    sCtx.fill();
+                } else {
+                    // 绘制移动轨迹
+                    sCtx.fillStyle = index === 0 ? '#e67e22' : 'rgba(243, 156, 18, 0.3)';
+                    sCtx.fillRect(x, y, scaleX, scaleY);
                 }
             });
-            // 绘制食物
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = "#e74c3c";
-            ctx.fillStyle = "#e74c3c";
-            ctx.beginPath();
-            ctx.arc(food.x * cellSize + cellSize/2, food.y * cellSize + cellSize/2, cellSize/3, 0, Math.PI*2);
-            ctx.fill();
-            ctx.shadowBlur = 0;
-            ctx.fillStyle = "#fff";
-            ctx.font = (cellSize * 0.6) + "px Arial";
-            ctx.textAlign = "center";
-            ctx.fillText("🍎", food.x * cellSize + cellSize/2, food.y * cellSize + cellSize/2 + cellSize/6);
+            
+            // 绘制起点
+            const start = moveRoute[0];
+            sCtx.fillStyle = '#27ae60';
+            sCtx.fillRect(start.x * scaleX, start.y * scaleY, scaleX, scaleY);
+            
+            // 绘制终点
+            const end = moveRoute[moveRoute.length - 1];
+            sCtx.fillStyle = '#e74c3c';
+            sCtx.fillRect(end.x * scaleX, end.y * scaleY, scaleX, scaleY);
         }
-        
-        function generateFood() {
-            food = {
-                x: Math.floor(Math.random() * config.gridSize),
-                y: Math.floor(Math.random() * config.gridSize)
-            };
-            if (snake.some(s => s.x === food.x && s.y === food.y)) {
-                generateFood();
+
+        // 保存到排行榜
+        function saveToRank() {
+            // 读取现有数据
+            let rank = JSON.parse(localStorage.getItem('snakeRank') || '[]');
+            
+            // 添加新记录
+            rank.push({
+                score: score,
+                apples: appleCount,
+                steps: moveRoute.length,
+                time: new Date().toLocaleString(),
+                difficulty: config.speed === 200 ? '简单' : (config.speed === 150 ? '中等' : '困难')
+            });
+            
+            // 排序并保留前10条
+            rank = rank.sort((a, b) => b.score - a.score).slice(0, 10);
+            
+            // 保存
+            localStorage.setItem('snakeRank', JSON.stringify(rank));
+            
+            // 更新排行榜数据
+            rankData = rank;
+        }
+
+        // 加载最高分
+        function loadHighestScore() {
+            highest = parseInt(localStorage.getItem('snakeHighest')) || 0;
+            document.getElementById('high-score').innerText = highest;
+        }
+
+        // 加载排行榜数据
+        function loadRankData() {
+            rankData = JSON.parse(localStorage.getItem('snakeRank') || '[]');
+        }
+
+        // 渲染排行榜
+        function renderRank() {
+            const rankList = document.getElementById('rank-list');
+            rankList.innerHTML = '';
+            
+            if (rankData.length === 0) {
+                rankList.innerHTML = '<div style="text-align: center; padding: 20px; color: #7f8c8d;">暂无记录</div>';
+                return;
             }
+            
+            rankData.forEach((item, index) => {
+                const rankItem = document.createElement('div');
+                rankItem.className = 'rank-item';
+                
+                rankItem.innerHTML = `
+                    <span class="rank-num">${index + 1}</span>
+                    <span class="rank-score">${item.score}分</span>
+                    <span class="rank-date">${item.time}</span>
+                `;
+                
+                rankList.appendChild(rankItem);
+            });
         }
-        
+
+        // 键盘控制
         function handleKeydown(e) {
-            if (isPaused || isGameOver) return;
+            if (isGameOver || isPaused) return;
+            
+            // 方向键控制
             switch(e.key) {
-                case "ArrowUp":
+                case 'ArrowUp':
                     if (dy !== 1) {
                         dx = 0;
                         dy = -1;
+                        config.dx = dx;
+                        config.dy = dy;
                     }
                     break;
-                case "ArrowDown":
+                case 'ArrowDown':
                     if (dy !== -1) {
                         dx = 0;
                         dy = 1;
+                        config.dx = dx;
+                        config.dy = dy;
                     }
                     break;
-                case "ArrowLeft":
+                case 'ArrowLeft':
                     if (dx !== 1) {
                         dx = -1;
                         dy = 0;
+                        config.dx = dx;
+                        config.dy = dy;
                     }
                     break;
-                case "ArrowRight":
+                case 'ArrowRight':
                     if (dx !== -1) {
                         dx = 1;
                         dy = 0;
+                        config.dx = dx;
+                        config.dy = dy;
                     }
                     break;
             }
         }
-        
-        function findShortestPath() { 
-            const dxFood = food.x - head.x;
-            const dyFood = food.y - head.y;
-            if (Math.abs(dxFood) > Math.abs(dyFood)) {
-                if (dxFood > 0 && dx !== -1) {
-                    return {x: 1, y: 0};
-                } else if (dxFood < 0 && dx !== 1) {
-                    return {x: -1, y: 0};
-                }
-            }
-            if (dyFood > 0 && dy !== -1) {
-                return {x: 0, y: 1};
-            } else if (dyFood < 0 && dy !== 1) {
-                return {x: 0, y: -1};
-            }
-            return null;
-        }
-        
+
+        // 暂停/继续游戏
         function togglePause() {
             isPaused = !isPaused;
-            if (isPaused) {
-                dom.pausePanel.style.display = "flex";
-            } else {
-                dom.pausePanel.style.display = "none";
+            dom.pausePanel.style.display = isPaused ? 'flex' : 'none';
+            
+            // 暂停时隐藏操控盘
+            if (joystick.container) {
+                joystick.container.style.display = isPaused ? 'none' : (config.control === 'swipe' ? 'block' : 'none');
             }
         }
-        
-        function gameOver() {
-            clearInterval(gameLoop);
-            isGameOver = true;
-            playSound("hitSound");
-            if(navigator.vibrate) navigator.vibrate(200);
-            if (score > highest) {
-                highest = score;
-                localStorage.setItem("snakeHighest", highest);
-            }
-            saveRankData();
-            showSummary();
-            dom.overPanel.style.display = "flex";
-        }
-        
-        function showSummary() {
-            document.getElementById("res-steps").innerText = moveRoute.length;
-            document.getElementById("res-apples").innerText = appleCount;
-            let difficulty = "简单";
-            if (config.speed === 150) difficulty = "中等";
-            if (config.speed === 120) difficulty = "困难";
-            document.getElementById("res-difficulty").innerText = difficulty;
-            drawRouteSummary();
-            let title = "[ 丛林萌蛇 ]";
-            if (score >= 100) title = "[ 草原灵蛇 ]";
-            if (score >= 200) title = "[ 峡谷猛蛇 ]";
-            if (score >= 500) title = "[ 沙漠巨蟒 ]";
-            if (score >= 1000) title = "[ 神龙降世 ]";
-            document.getElementById("achievement-title").innerText = title;
-        }
-        
-        function drawRouteSummary() {
-            const sCanvas = document.getElementById("route-summary-map");
-            const sCtx = sCanvas.getContext("2d");
-            sCtx.clearRect(0, 0, sCanvas.width, sCanvas.height);
-            sCtx.fillStyle = "#fef9ef";
-            sCtx.fillRect(0, 0, sCanvas.width, sCanvas.height);
-            const cellSize = Math.min(sCanvas.width / config.gridSize, sCanvas.height / config.gridSize);
-            moveRoute.forEach((pos, index) => {
-                const x = pos.x * cellSize;
-                const y = pos.y * cellSize;
-                sCtx.fillStyle = index === 0 ? "#e74c3c" : "#f39c12";
-                if (pos.isApple) {
-                    sCtx.fillStyle = "#2ecc71";
-                }
-                sCtx.fillRect(x, y, cellSize - 1, cellSize - 1);
-            });
-        }
-        
-        function saveAsImage() {
-            const canvas = document.getElementById("route-summary-map");
-            const dataURL = canvas.toDataURL("image/png");
-            const link = document.createElement("a");
-            link.download = `贪吃蛇战绩_${score}分_${new Date().toLocaleDateString()}.png`;
-            link.href = dataURL;
-            link.click();
-        }
-        
-        function loadHighestScore() {
-            highest = parseInt(localStorage.getItem("snakeHighest")) || 0;
-            document.getElementById("high-score").innerText = highest;
-        }
-        
-        function saveRankData() {
-            const now = new Date();
-            const record = {
-                score: score,
-                date: now.toLocaleString(),
-                timestamp: now.getTime()
-            };
-            rankData.push(record);
-            rankData.sort((a, b) => b.score - a.score);
-            rankData = rankData.slice(0, 10);
-            localStorage.setItem("snakeRank", JSON.stringify(rankData));
-        }
-        
-        function loadRankData() {
-            const saved = localStorage.getItem("snakeRank");
-            if (saved) {
-                rankData = JSON.parse(saved);
-            }
-        }
-        
-        function renderRank() {
-            const list = document.getElementById("rank-list");
-            list.innerHTML = "";
-            if (rankData.length === 0) {
-                list.innerHTML = '<div class="rank-item"><span style="color:#7f8c8d;">暂无游戏记录</span></div>';
-                return;
-            }
-            rankData.forEach((item, index) => {
-                const el = document.createElement("div");
-                el.className = "rank-item";
-                el.innerHTML = `
-                    <span class="rank-num">${index + 1}</span>
-                    <span class="rank-score">${item.score} 分</span>
-                    <span class="rank-date">${item.date}</span>
-                `;
-                list.appendChild(el);
-            });
-        }
-        
+
+        // 重新开始游戏
         function restartGame() {
             startGame();
         }
-        
+
+        // 返回首页
         function backToHome() {
             clearInterval(gameLoop);
-            dom.gameHome.style.display = "flex";
-            dom.gameHeader.style.display = "none";
-            dom.gameWrapper.style.display = "none";
-            dom.joystickArea.style.display = "none";
+            isGameOver = false;
+            isPaused = false;
+            
+            dom.gameHome.style.display = 'flex';
+            dom.gameHeader.style.display = 'none';
+            dom.gameWrapper.style.display = 'none';
+            dom.overPanel.style.display = 'none';
+            dom.pausePanel.style.display = 'none';
+            
+            // 隐藏操控盘
+            if (joystick.container) {
+                joystick.container.style.display = 'none';
+            }
+        }
+
+        // 保存为图片（分享战绩）
+        function saveAsImage() {
+            const shareCard = document.querySelector('.share-card');
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // 设置画布尺寸
+            canvas.width = shareCard.offsetWidth;
+            canvas.height = shareCard.offsetHeight;
+            
+            // 绘制内容
+            html2canvas(shareCard).then(canvas => {
+                // 创建下载链接
+                const link = document.createElement('a');
+                link.download = `贪吃蛇战绩_${score}分.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(e => {
+                alert('截图失败，请重试！');
+                console.error(e);
+            });
         }
     </script>
+    <!-- 引入html2canvas用于截图 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </body>
 </html>
